@@ -1,13 +1,8 @@
 const mongoose = require('mongoose');
 
 const patientSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    require: true,
-    },
   name: {
-    f_name: { type: String },
-    l_name: { type: String }
+    type: String
   },
   phone_number: {
     type: String,

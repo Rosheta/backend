@@ -4,7 +4,7 @@ const doctorSchema = new mongoose.Schema({
   id: {
     type: String,
     require: true,
-    },
+  },
   name: {
     f_name: { type: String },
     l_name: { type: String }
@@ -39,6 +39,6 @@ const doctorSchema = new mongoose.Schema({
   degree: { type: String }
 });
 
-const Doctor = mongoose.model('User', doctorSchema);
+const Doctor = mongoose.model('Doctor', doctorSchema);
 
 module.exports = Doctor;
