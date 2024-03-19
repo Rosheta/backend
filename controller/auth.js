@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
+
 const Patient = require('../models/patient');
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 const authController = {
   register: async (req, res) => {
@@ -50,7 +56,7 @@ const authController = {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
-      const token = jwt.sign({ email: patient.email, id: patient._id }, 'secret', { expiresIn: '1h' });
+      const token = jwt.sign({ email: patient.email, id: patient._id }, JWT_SECRET, { expiresIn: '1h' });
 
       res.status(200).json({ token });
     } catch (error) {

@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-const DATABASE_CONNECTION_STRING = 'mongodb://127.0.0.1:27017/rosheta';
+dotenv.config();
 
-mongoose.connect(DATABASE_CONNECTION_STRING, {
+const URI = process.env.URI;
+
+mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

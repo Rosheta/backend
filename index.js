@@ -1,18 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Patient = require('./models/patient');
-const authController = require('./controller/AuthPatient');
+const authController = require('./controller/auth');
+const profileController = require('./controller/profile');
 const db = require('./db/mongo')
+const dotenv = require('dotenv');
 
+dotenv.config();
 const app = express();
-const PORT = 5000;
 
-
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('Connected to the database');
-});
+const PORT = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -23,6 +20,8 @@ app.get('/', (req, res) => {
 app.post('/register', authController.register);
 
 app.post('/login', authController.login);
+
+app.get('/profile', profileController.profile);
 
 app.get('/patients', async (req, res) => {
   try {
