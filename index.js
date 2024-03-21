@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const Patient = require('./models/patient');
 const authController = require('./controller/auth');
 const profileController = require('./controller/profile');
+const chatsController = require('./controller/chats');
 const db = require('./db/mongo')
 const dotenv = require('dotenv');
 
@@ -22,6 +23,10 @@ app.post('/register', authController.register);
 app.post('/login', authController.login);
 
 app.get('/profile', profileController.profile);
+
+app.get('/getChats', chatsController.chats);
+
+app.get('/getChatContent', chatsController.chatContent);
 
 app.get('/patients', async (req, res) => {
   try {

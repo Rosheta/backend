@@ -4,7 +4,7 @@
   "description": "backend for our garduation project (EHR data manager blckchain based)",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
