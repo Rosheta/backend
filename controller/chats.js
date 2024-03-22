@@ -5,9 +5,32 @@ const dotenv = require('dotenv');
 const chat = require('../models/chat');
 const patient = require('../models/patient');
 const message = require('../models/message');
+
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Create an express app
+const app = express();
+const server = http.createServer(app);
+
+const io = socketIo(server)
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('sendMessage', async (data) => {
+        console.log('Message received:', data);
+        const { senderId, receiverId, chatId, message } = data;
+        
+        const result = await chatController.saveMessage(senderId, receiverId, chatId, message);
+
+        io.emit(`message_${receiverId}`, { senderId, chatId, message });
+    });
+});
 const chatController = {
     chats: async (req, res) => {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
@@ -78,7 +101,16 @@ const chatController = {
             const userId = decoded.id;
 
             const chatId = parseInt(req.body.chatId);
-            console.log(chatId)
+
+            const Chat = await chat.findOne({ chatId });
+            if (!Chat) {
+                return res.status(404).json({ error: 'Chat not found' });
+            }
+           
+            if (Chat.userId_1 !== userId && Chat.userId_2 !== userId) {
+                return res.status(403).json({ error: 'Unauthorized access to chat' });
+            }
+
             const messages = await message.find({ chatId });
 
             if (!messages) {
@@ -112,6 +144,19 @@ const chatController = {
             const currentUserId = decoded.id;
             const anotherUserId = req.body.userId;
     
+            // Check if a chat already exists with the given pair of user IDs
+            const existingChat = await chat.findOne({
+                $or: [
+                    { userId_1: currentUserId, userId_2: anotherUserId },
+                    { userId_1: anotherUserId, userId_2: currentUserId }
+                ]
+            });
+    
+            if (existingChat) {
+                // If a chat already exists, return an error
+                return res.status(400).json({ error: 'Chat already exists' });
+            }
+    
             // Create a new chat document
             const newChat = new chat({
                 userId_1: currentUserId,
@@ -127,7 +172,25 @@ const chatController = {
             console.log(error);
             return res.status(401).json({ error: 'Token is invalid' });
         }
+    },
+
+    saveMessage: async (senderId, receiverId, chatId, message) => {
+        try {
+            const newMessage = new message({
+                chatId:chatId,
+                sender: senderId,
+                receiver: receiverId,
+                message:message
+            });
+
+            await newMessage.save();
+            return { success: true };
+        } catch (error) {
+            console.log(error);
+            return { success: false, error: 'Failed to save message' };
+        }
     }
+    
  };
 
 module.exports = chatController;
