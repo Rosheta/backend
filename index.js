@@ -28,6 +28,8 @@ app.get('/getChats', chatsController.chats);
 
 app.get('/getChatContent', chatsController.chatContent);
 
+app.post('/startChat', chatsController.startChat);
+
 app.get('/patients', async (req, res) => {
   try {
     const patients = await Patient.find({});

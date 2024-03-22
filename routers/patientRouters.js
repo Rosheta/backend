@@ -16,6 +16,9 @@ router.post('/get', profileController.profile);
 // Route for getting chats
 router.post('/getChats' ,chatController.chats)
 
-// Route for getting chats
+// Route for getting chat content
 router.post('/getChatContent' ,chatController.chatContent)
+
+// Route for starting chats
+router.post('/startChat' ,chatController.startChat)
 module.exports = router;

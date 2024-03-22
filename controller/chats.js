@@ -97,7 +97,37 @@ const chatController = {
             console.log(error)
             return res.status(401).json({ error: 'Token is invalid' });
         }
+    },
+
+    startChat: async (req, res) => {
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+    
+        if (!token) {
+            return res.status(401).json({ error: 'Token is missing' });
+        }
+    
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            
+            const currentUserId = decoded.id;
+            const anotherUserId = req.body.userId;
+    
+            // Create a new chat document
+            const newChat = new chat({
+                userId_1: currentUserId,
+                userId_2: anotherUserId
+            });
+    
+            // Save the new chat document
+            await newChat.save();
+    
+            // Respond with success message
+            return res.status(200).json({ message: 'Chat started successfully' });
+        } catch (error) {
+            console.log(error);
+            return res.status(401).json({ error: 'Token is invalid' });
+        }
     }
-};
+ };
 
 module.exports = chatController;
