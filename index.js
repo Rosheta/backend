@@ -30,7 +30,7 @@ app.get('/profile', profileController.profile);
 
 app.get('/getChats', chatsController.chats);
 
-app.post('/getChatContent', chatsController.chatContent);
+app.get('/getChatContent', chatsController.chatContent);
 
 app.post('/startChat', chatsController.startChat);
 

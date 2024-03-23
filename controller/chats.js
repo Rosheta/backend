@@ -80,7 +80,9 @@ const chatController = {
             
             const userId = decoded.id;
 
-            const chatId = parseInt(req.body.chatId);
+            const chatId = parseInt(req.query.chatId);
+
+            console.log(chatId)
 
             const Chat = await chat.findOne({ chatId });
             if (!Chat) {
