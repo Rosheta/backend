@@ -1,5 +1,5 @@
-const patientRouter = require('./routers/patientRouters.js');
-const doctorRouter = require('./routers/doctorRouters.js');
+// const patientRouter = require('./routers/patientRouters.js');
+// const doctorRouter = require('./routers/doctorRouters.js');
 const userRouter = require('./routers/userRouters.js');
 
 const express = require('express');
@@ -29,19 +29,11 @@ app.get('/', (req, res) => {
 
 app.use('/', userRouter);
 
-
-app.get('/getChats', chatsController.chats);
-
-app.get('/getChatContent', chatsController.chatContent);
-
-app.post('/startChat', chatsController.startChat);
-
 io.on('connection', (socket) => {
   console.log('A user connected');
 
   socket.on('sendMessage', async (data) => {
       console.log('Message received:', data);
-      // const { senderId, chatId, message } = data;
       senderId = data.senderId;
       chatId = data.chatId;
       message = data.message;
@@ -56,10 +48,6 @@ io.on('connection', (socket) => {
       });
   });
 });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}/`);
-// });
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
