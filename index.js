@@ -30,7 +30,7 @@ app.get('/profile', profileController.profile);
 
 app.get('/getChats', chatsController.chats);
 
-app.post('/getChatContent', chatsController.chatContent);
+app.get('/getChatContent', chatsController.chatContent);
 
 app.post('/startChat', chatsController.startChat);
 
@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
       io.emit(`${chatId}`, {
           sender: senderId,
           message: message,
-          time: new Date(), // Use current time
+          time: new Date(), 
           isSeen: false
       });
   });
