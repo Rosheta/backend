@@ -1,0 +1,313 @@
+---
+openapi: 3.0.0
+info:
+  title: Rosheta API
+  description: This is the internal API documentation for Rosheta,
+   our project aimed at enhancing the functionality and usability of our application.
+   Designed to streamline communication between various components of our system,
+   this API provides endpoints tailored for seamless integration with our application's frontend and backend systems.
+   Whether registering new users, authenticating access, or retrieving user profiles,
+   this API serves as the backbone for enabling smooth interactions within our application ecosystem.
+   Welcome to the comprehensive documentation of our project's API, meticulously crafted to empower our development team in building a robust and efficient application experience.
+  contact:
+    email: rosheta@gmail.com
+    url: https://github.com/Rosheta
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://localhost:5000
+  description: test locally on your machine
+tags:
+- name: user
+  description: operations or resources related to general user(patient or doctor)
+- name: patient
+  description: operations or resources related to the patient user
+- name: doctor
+  description: Operations or resources related to the doctor user
+paths:
+  /register:
+    post:
+      tags: 
+        - user
+      summary: Register a new user(patient/doctor)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Successfully registered a new user
+        '400':
+          description: Email already exists or invalid request
+        '500':
+          description: Internal server error
+  /login:
+    post:
+      tags: 
+        - user
+      summary: Authenticate a user(patient/doctor)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JSON Web Token for authentication
+        '401':
+          description: Invalid email or password
+        '500':
+          description: Internal server error
+  /profile:
+    get:
+      tags: 
+        - user
+      summary: Get user(patient/doctor) profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved user(patient/doctor) profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized - Authentication failed
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /getChats:
+    get:
+      tags:
+        - user
+      summary: Retrieve user's chats
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved user's chats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChatsResponse'
+        '401':
+          description: Unauthorized - Token is missing or invalid
+
+  /getChatContent:
+    get:
+      tags:
+        - user
+      summary: Retrieve chat content
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetChatContentRequest'
+      responses:
+        '200':
+          description: Successfully retrieved chat content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChatContentResponse'
+        '401':
+          description: Unauthorized - Token is missing or invalid
+        '403':
+          description: Forbidden - Unauthorized access to chat
+        '404':
+          description: Not Found - Chat not found
+
+  /startChat:
+    post:
+      tags:
+        - user
+      summary: Start a new chat
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartChatRequest'
+      responses:
+        '200':
+          description: Chat started successfully
+        '400':
+          description: Bad Request - Chat already exists
+        '401':
+          description: Unauthorized - Token is missing or invalid
+
+  /search:
+    get:
+      tags:
+        - user
+      summary: Search for doctors/patients by username
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The search query to match usernames
+      responses:
+        '200':
+          description: Successfully retrieved search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Bad Request - Empty query provided
+        '500':
+          description: Internal Server Error - Something went wrong on the server
+
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the user(patient/doctor)
+        password:
+          type: string
+          format: password
+          description: The password of the user(patient/doctor)
+        name:
+          type: string
+          description: The name of the user(patient/doctor)
+        phone:
+          type: string
+          description: The phone number of the user(patient/doctor)
+        ssn:
+          type: string
+          description: The social security number of the patient
+        birthdate:
+          type: string
+          format: date
+          description: The birthdate of the user(patient/doctor)
+        type:
+          type: string
+          description: The type of user(patient/doctor) (if applicable)
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the user(patient/doctor)
+        password:
+          type: string
+          format: password
+          description: The password of the user(patient/doctor)
+    UserProfile:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: The name of the user(patient/doctor)
+        email:
+          type: string
+          format: email
+          description: The email address of the user(patient/doctor)
+        phone:
+          type: string
+          description: The phone number of the user(patient/doctor)
+        date:
+          type: string
+          format: date
+          description: The birthdate of the user(patient/doctor)
+        ID:
+          type: string
+          description: The social security number of the user(patient/doctor)
+    GetChatsResponse:
+      type: object
+      properties:
+        friends:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatInfo'
+    ChatInfo:
+      type: object
+      properties:
+        chatId:
+          type: string
+          description: ID of the chat
+        name:
+          type: string
+          description: Name of the friend
+        sender:
+          type: string
+          description: ID of the sender
+        lastmsg:
+          type: string
+          description: Last message in the chat
+        time:
+          type: string
+          format: date-time
+          description: Timestamp of the last message
+    GetChatContentRequest:
+      type: object
+      properties:
+        chatId:
+          type: integer
+          description: ID of the chat
+    GetChatContentResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ID of the user
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageInfo'
+    MessageInfo:
+      type: object
+      properties:
+        sender:
+          type: string
+          description: ID of the message sender
+        message:
+          type: string
+          description: Message content
+        time:
+          type: string
+          format: date-time
+          description: Timestamp of the message
+        isSeen:
+          type: boolean
+          description: Indicates whether the message is seen or not
+    StartChatRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ID of the user to start chat with
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,5 +1,10 @@
+const patientRouter = require('./routers/patientRouters.js');
+const doctorRouter = require('./routers/doctorRouters.js');
+const userRouter = require('./routers/userRouters.js');
+
 const express = require('express');
 const bodyParser = require('body-parser');
+
 const Patient = require('./models/patient');
 const authController = require('./controller/auth');
 const profileController = require('./controller/profile');
@@ -22,27 +27,14 @@ app.get('/', (req, res) => {
   res.send('lol Rosheta!');
 });
 
-app.post('/register', authController.register);
+app.use('/', userRouter);
 
-app.post('/login', authController.login);
-
-app.get('/profile', profileController.profile);
 
 app.get('/getChats', chatsController.chats);
 
 app.get('/getChatContent', chatsController.chatContent);
 
 app.post('/startChat', chatsController.startChat);
-
-app.get('/patients', async (req, res) => {
-  try {
-    const patients = await Patient.find({});
-    res.send(patients);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal server error');
-  }
-});
 
 io.on('connection', (socket) => {
   console.log('A user connected');
