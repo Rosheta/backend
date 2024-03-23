@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
       io.emit(`${chatId}`, {
           sender: senderId,
           message: message,
-          time: new Date(), // Use current time
+          time: new Date(), 
           isSeen: false
       });
   });

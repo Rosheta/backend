@@ -82,7 +82,6 @@ const chatController = {
 
             const chatId = parseInt(req.query.chatId);
 
-            console.log(chatId)
 
             const Chat = await chat.findOne({ chatId });
             if (!Chat) {

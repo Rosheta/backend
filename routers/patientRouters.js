@@ -14,10 +14,10 @@ router.post('/login', authController.login);
 router.post('/get', profileController.profile);
 
 // Route for getting chats
-router.post('/getChats' ,chatController.chats)
+router.get('/getChats' ,chatController.chats)
 
 // Route for getting chat content
-router.post('/getChatContent' ,chatController.chatContent)
+router.get('/getChatContent' ,chatController.chatContent)
 
 // Route for starting chats
 router.post('/startChat' ,chatController.startChat)
