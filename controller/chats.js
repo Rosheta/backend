@@ -24,11 +24,18 @@ io.on('connection', (socket) => {
 
     socket.on('sendMessage', async (data) => {
         console.log('Message received:', data);
-        const { senderId, receiverId, chatId, message } = data;
-        
+        const { senderId, chatId, message } = data;
+        receiverId =await chatController.getReceiverId (chatId , senderId);
         const result = await chatController.saveMessage(senderId, receiverId, chatId, message);
-
+       
         io.emit(`message_${receiverId}`, { senderId, chatId, message });
+
+        // io.emit(`message_${chatId}`, {
+        //     sender: senderId,
+        //     message: message,
+        //     time: new Date().toISOString(), // Use current time
+        //     isSeen: false
+        // });
     });
 });
 const chatController = {
@@ -189,8 +196,21 @@ const chatController = {
             console.log(error);
             return { success: false, error: 'Failed to save message' };
         }
-    }
-    
- };
+    },
 
+    getReceiverId : async (chatId, senderId) => {
+        try {
+            const chatData = await chat.findOne({ chatId });
+            if (!chatData) {
+                throw new Error('Chat not found');
+            }
+            const receiverId = senderId === chatData.userId_1 ? chatData.userId_2 : chatData.userId_1;
+            return receiverId;
+        } catch (error) {
+            console.log(error)
+            throw new Error(`Failed to get receiver ID: ${error.message}`);
+        }
+ 
+    }
+};
 module.exports = chatController;
