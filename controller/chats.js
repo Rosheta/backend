@@ -6,41 +6,14 @@ const chat = require('../models/chat');
 const patient = require('../models/patient');
 const message = require('../models/message');
 
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Create an express app
-const app = express();
-const server = http.createServer(app);
 
-const io = socketIo(server)
-
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    socket.on('sendMessage', async (data) => {
-        console.log('Message received:', data);
-        const { senderId, chatId, message } = data;
-        receiverId =await chatController.getReceiverId (chatId , senderId);
-        const result = await chatController.saveMessage(senderId, receiverId, chatId, message);
-       
-        io.emit(`message_${receiverId}`, { senderId, chatId, message });
-
-        // io.emit(`message_${chatId}`, {
-        //     sender: senderId,
-        //     message: message,
-        //     time: new Date().toISOString(), // Use current time
-        //     isSeen: false
-        // });
-    });
-});
 const chatController = {
     chats: async (req, res) => {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+        
 
         if (!token) {
             return res.status(401).json({ error: 'Token is missing' });
@@ -50,7 +23,6 @@ const chatController = {
             const decoded = jwt.verify(token, JWT_SECRET);
             
             const userId = decoded.id;
-            console.log(userId)
             const userChats = await chat.find({
                 $or: [
                     { userId_1: userId },
@@ -79,11 +51,11 @@ const chatController = {
                     }
             
                     const formattedMessage = {
-                        chatId: lastMessage.chatId,
+                        chatId: lastMessage.chatId.toString(),
                         name: friendName,
                         sender: lastMessage.sender,
                         lastmsg: lastMessage.message,
-                        time: lastMessage.timestamp
+                        time: lastMessage.timestamp,
                     };
                     friends.push(formattedMessage);
                 }
@@ -97,6 +69,7 @@ const chatController = {
     
     chatContent: async (req, res) => {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+
 
         if (!token) {
             return res.status(401).json({ error: 'Token is missing' });
@@ -130,7 +103,6 @@ const chatController = {
                 time: message.timestamp,
                 isSeen: message.isSeen
             }));
-    
             return res.status(200).json({ userId, messages: formattedMessages });
         }catch (error) {
             console.log(error)
@@ -181,13 +153,13 @@ const chatController = {
         }
     },
 
-    saveMessage: async (senderId, receiverId, chatId, message) => {
+    saveMessage: async (senderId, receiverId, chatId, msg) => {
         try {
             const newMessage = new message({
                 chatId:chatId,
                 sender: senderId,
                 receiver: receiverId,
-                message:message
+                message:msg
             });
 
             await newMessage.save();
