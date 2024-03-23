@@ -5,12 +5,20 @@ const userRouter = require('./routers/userRouters.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const Patient = require('./models/patient');
+const authController = require('./controller/auth');
+const profileController = require('./controller/profile');
+const chatsController = require('./controller/chats');
 const db = require('./db/mongo')
 const dotenv = require('dotenv');
+const http = require('http');
+const socketIo = require('socket.io');
 
 dotenv.config();
 const app = express();
+const server = http.createServer(app);
 
+const io = socketIo(server)
 const PORT = process.env.PORT;
 
 app.use(bodyParser.json());
@@ -22,6 +30,37 @@ app.get('/', (req, res) => {
 app.use('/', userRouter);
 
 
-app.listen(PORT, () => {
+app.get('/getChats', chatsController.chats);
+
+app.get('/getChatContent', chatsController.chatContent);
+
+app.post('/startChat', chatsController.startChat);
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('sendMessage', async (data) => {
+      console.log('Message received:', data);
+      // const { senderId, chatId, message } = data;
+      senderId = data.senderId;
+      chatId = data.chatId;
+      message = data.message;
+      receiverId =await chatsController.getReceiverId(chatId , senderId);
+      await chatsController.saveMessage(senderId, receiverId, chatId, message);
+    
+      io.emit(`${chatId}`, {
+          sender: senderId,
+          message: message,
+          time: new Date(), 
+          isSeen: false
+      });
+  });
+});
+
+// app.listen(PORT, () => {
+//   console.log(`Server running at http://localhost:${PORT}/`);
+// });
+
+server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
