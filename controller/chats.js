@@ -12,17 +12,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const chatController = {
     chats: async (req, res) => {
-        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-        
-
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing' });
-        }
-
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            
-            const userId = decoded.id;
+        try {        
+            const userId = req.user;
             const userChats = await chat.find({
                 $or: [
                     { userId_1: userId },
@@ -63,26 +54,14 @@ const chatController = {
             return res.status(200).json({ friends });        
         } catch (error) {
             console.log(error)
-            return res.status(401).json({ error: 'Token is invalid' });
+            return res.status(401).json({ error: 'Error' });
         }
     },
     
     chatContent: async (req, res) => {
-        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing' });
-        }
-
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            
-            const userId = decoded.id;
-
-            const chatId = parseInt(req.query.chatId);
-
-
+        try {    
+            const userId = req.user;
+            const chatId = parseInt(req.body.chatId);
             const Chat = await chat.findOne({ chatId });
             if (!Chat) {
                 return res.status(404).json({ error: 'Chat not found' });
@@ -107,21 +86,14 @@ const chatController = {
             return res.status(200).json({ userId, messages: formattedMessages });
         }catch (error) {
             console.log(error)
-            return res.status(401).json({ error: 'Token is invalid' });
+            return res.status(401).json({ error: 'Error' });
         }
     },
 
     startChat: async (req, res) => {
-        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
     
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing' });
-        }
-    
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            
-            const currentUserId = decoded.id;
+        try {         
+            const currentUserId = req.user;
             const anotherUserId = req.body.userId;
     
             // Check if a chat already exists with the given pair of user IDs
