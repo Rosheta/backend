@@ -1,32 +1,70 @@
 const mongoose = require('mongoose');
+const { isEmail, isLength, isNumeric } = require('validator')
 
 const patientSchema = new mongoose.Schema({
   name: {
-    type: String
+    type: String,
+    minlength: 2,
+    required: [true, "you must enter your name"]
   },
   phone_number: {
-    type: String,
-    unique: true
-  },
-  ssn: {
-    type: String,
-    unique: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    validate: {
-      validator: function(email) {
-        return /\S+@\S+\.\S+/.test(email);
-      },
-      message: props => `${props.value} is not a valid email address!`
+    value: {
+      type: String,
+      unique: [true, "phone number is already used"],
+      validate: [v => isLength(v, { min: 11, max: 11 }) && isNumeric(v), `not a valid phone number. Must be exactly 11 digits.`],
+      required: [true, "you must enter a phone number"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
     }
   },
-  password: { type: String },
-  d_o_b: { type: Date },
+  ssn: {
+    value: {
+      type: String,
+      unique: [true, "SSN is already used"],
+      validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
+  email: {
+    value: {
+      type: String,
+      unique: [true, "email is already used"],
+      validate: [isEmail, 'not a valid email'],
+      required: [true, "you must enter your email"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
+  password: {
+    type: String,
+    required: [true, "you must enter a password"],
+    
+  },
+  d_o_b:{
+    value: {
+      type: [Date, "not a valid date type"],
+      required: [true, "you must enter your birth date"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
   gender: {
     type: String,
-    enum: ['m', 'f']
+    enum: ['m', 'f'],
+    // required: [true, "you must enter your gender"]
+  },
+  profile_picture: {
+    type: String,
+    default: null
   }
 });
 
