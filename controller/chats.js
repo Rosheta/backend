@@ -61,7 +61,7 @@ const chatController = {
     chatContent: async (req, res) => {
         try {    
             const userId = req.user;
-            const chatId = parseInt(req.body.chatId);
+            const chatId = parseInt(req.query.chatId);
             const Chat = await chat.findOne({ chatId });
             if (!Chat) {
                 return res.status(404).json({ error: 'Chat not found' });
