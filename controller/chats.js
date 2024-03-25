@@ -112,19 +112,10 @@ const chatController = {
     },
 
     startChat: async (req, res) => {
-        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-    
-        if (!token) {
-            return res.status(401).json({ error: 'Token is missing' });
-        }
-    
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            
-            const currentUserId = decoded.id;
+        try {         
+            const currentUserId = req.user;
             const anotherUserId = req.body.userId;
     
-            // Check if a chat already exists with the given pair of user IDs
             const existingChat = await chat.findOne({
                 $or: [
                     { userId_1: currentUserId, userId_2: anotherUserId },
@@ -133,24 +124,20 @@ const chatController = {
             });
     
             if (existingChat) {
-                // If a chat already exists, return an error
-                return res.status(400).json({ error: 'Chat already exists' });
+                return res.status(200).json({chatId: existingChat.chatId.toString() });
             }
     
-            // Create a new chat document
             const newChat = new chat({
                 userId_1: currentUserId,
                 userId_2: anotherUserId
             });
     
-            // Save the new chat document
             await newChat.save();
     
-            // Respond with success message
-            return res.status(200).json({ message: 'Chat started successfully' });
+            return res.status(200).json({chatId: newChat.chatId.toString() });
         } catch (error) {
             console.log(error);
-            return res.status(401).json({ error: 'Token is invalid' });
+            return res.status(500).json({ error: 'Internal server error' });
         }
     },
 
