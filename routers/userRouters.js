@@ -12,7 +12,13 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 
 // Route for getting patient/doctor profile
-router.get('/profile', authMiddleware.authenticate, profileController.profile);
+router.get('/profile', authMiddleware.authenticate, profileController.getMyProfile);
+
+router.put('/profile', authMiddleware.authenticate, profileController.updateProfile);
+
+router.get('/profileByID', authMiddleware.authenticate, profileController.getProfile);
+
+router.put('/profilePicture', authMiddleware.authenticate, profileController.updateProfilePicture);
 
 // Route for getting chats
 router.get('/getChats' , authMiddleware.authenticate,chatController.chats)
