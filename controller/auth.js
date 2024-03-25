@@ -14,19 +14,10 @@ const authController = {
     try {
       const { email, password, name, phone, ssn, birthdate } = req.body;
       
-      // Validate password before hashing
-      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
-      if (!passwordRegex.test(password)) {
-        return res.status(400).json({ password: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character." });
-      }
-      
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // Create a new patient
       const newPatient = new Patient({ 
         email: { value: email }, 
-        password: hashedPassword, 
+        password: password, 
         name: name,
         phone_number: { value: phone }, 
         ssn: { value: ssn },
