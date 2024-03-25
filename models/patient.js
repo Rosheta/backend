@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { isEmail, isLength, isNumeric } = require('validator')
+const bcrypt = require('bcryptjs');
+const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator')
 
 const patientSchema = new mongoose.Schema({
   name: {
@@ -45,7 +46,7 @@ const patientSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "you must enter a password"],
-    
+    validate: [isStrongPassword, 'not strong enough password'],
   },
   d_o_b:{
     value: {
@@ -67,7 +68,10 @@ const patientSchema = new mongoose.Schema({
     default: null
   }
 });
-
+patientSchema.pre('save', async function(next) {
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 const Patient = mongoose.model('Patient', patientSchema);
 
 module.exports = Patient;
