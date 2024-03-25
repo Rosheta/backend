@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest"
+    "test": "jest",
+    "seed": "node ./db/patients_seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "validator": "^13.11.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "jest": "^29.7.0",
     "nodemon": "^3.1.0"
   }
