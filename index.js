@@ -9,6 +9,8 @@ const Patient = require('./models/patient');
 const authController = require('./controller/auth');
 const profileController = require('./controller/profile');
 const chatsController = require('./controller/chats');
+const searchController = require('./controller/search');
+
 const db = require('./db/mongo')
 const dotenv = require('dotenv');
 const http = require('http');

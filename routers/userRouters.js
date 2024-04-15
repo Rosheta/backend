@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require('../controller/auth');
 const profileController = require('../controller/profile');
 const chatController = require('../controller/chats');
+const searchController = require('../controller/search');
 const authMiddleware = require('../middleware/auth');
 
 // Route for registering a new patient/doctor
@@ -22,5 +23,8 @@ router.get('/getChatContent' , authMiddleware.authenticate,chatController.chatCo
 
 // Route for starting chats
 router.post('/startChat' , authMiddleware.authenticate,chatController.startChat)
+
+// Route for search
+router.post('/search' , searchController.search)
 
 module.exports = router;
