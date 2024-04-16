@@ -7,7 +7,11 @@ const searchController = {
     search: async (req, res) => {
 
         const query = req.body.query;
+        const hospital = req.body.hospitalName;
+        const specialization = req.body.specialization;
         console.log(query);
+        console.log(hospital);
+        console.log(specialization);
         // const result = await Doctor.find({ username: { $regex: '^' + query, $options: 'i' } },{projection: {username:1}}).toArray();
         const result = await Doctor.find({ name:query });
         console.log(result);
