@@ -76,7 +76,7 @@ const chatController = {
             const userId = decoded.id;
             const chatId = req.query.chatId;
             const page = parseInt(req.query.page); 
-            const pageSize = 2;
+            const pageSize = 30;
 
             const Chat = await chat.findById(chatId);
             if (!Chat) {
@@ -101,6 +101,7 @@ const chatController = {
                     .skip((page - 1) * pageSize)
                     .limit(pageSize);
             }
+            messages = messages.reverse()
     
             const formattedMessages = messages.map(message => ({
                 sender: message.sender,
@@ -166,7 +167,7 @@ const chatController = {
 
     getReceiverId : async (chatId, senderId) => {
         try {
-            const chatData = await chat.findOne({ chatId });
+            const chatData = await chat.findById( chatId );
             if (!chatData) {
                 throw new Error('Chat not found');
             }
