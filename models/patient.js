@@ -77,8 +77,8 @@ patientSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, 10);
 
   this.username = this.email.value.split('@')[0];
-  let usernameExists = await this.constructor.find({ username: this.username });
-  
+  let usernameExists = await this.constructor.findOne({ username: this.username });
+
   let nonce = 1;
   while (usernameExists) {
     this.username = `${this.username}_${nonce}`;

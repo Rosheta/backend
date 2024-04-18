@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 
 const Patient = require('../models/patient');
+const Doctor = require('../models/doctor');
+
 const handleErrors = require('../utils/errorHandler')
 
 dotenv.config();
@@ -37,22 +39,24 @@ const authController = {
 
   register_doctor: async (req, res) => {
     try {
-      const { email, password, name, phone, ssn, birthdate, gender } = req.body;
+      const { email, password, name, phone, ssn, birthdate, gender, clinicPosition, government } = req.body;
       
       // Create a new patient
-      const newPatient = new Patient({ 
-        email: { value: email }, 
+      const newDoctor = new Doctor({ 
+        email: email, 
         password: password, 
         name: name,
-        phone_number: { value: phone }, 
-        ssn: { value: ssn },
-        birthdate: { value: birthdate },
-        gender: gender
+        phone_number: phone, 
+        ssn: ssn,
+        birthdate: birthdate,
+        gender: gender,
+        location : clinicPosition,
+        government : government
       });
 
-      await newPatient.save();
+      await newDoctor.save();
 
-      res.status(201).json({ message: 'Patient registered successfully' });
+      res.status(201).json({ message: 'Doctor registered successfully' });
     } catch (error) {
       // console.error(error);
       const e = handleErrors(error)
