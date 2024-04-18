@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
+const Lab = require('../models/lab');
 
 const handleErrors = require('../utils/errorHandler')
 
@@ -39,9 +40,9 @@ const authController = {
 
   register_doctor: async (req, res) => {
     try {
-      const { email, password, name, phone, ssn, birthdate, gender, clinicPosition, government } = req.body;
-      
-      // Create a new patient
+      const { email, password, name, phone, ssn, birthdate, gender, location, government, department } = req.body;
+
+      // Create a new doctor
       const newDoctor = new Doctor({ 
         email: { value: email }, 
         password: password, 
@@ -50,8 +51,10 @@ const authController = {
         ssn: { value: ssn },
         birthdate: { value: birthdate },
         gender: gender,
-        location : clinicPosition,
-        government : government
+        location : location,
+        government: government,
+        department: department,
+        license: req.file.path
       });
 
       await newDoctor.save();
@@ -63,22 +66,57 @@ const authController = {
       res.status(500).json(e);
     }
   },
+  register_lab: async (req, res) => {
+    try {
+      const { email, password, name, phone, location, government } = req.body;
+      
+      // Create a new Lab
+      const newLab = new Lab({ 
+        email: { value: email }, 
+        password: password, 
+        name: name,
+        phone_number: { value: phone }, 
+        location : location,
+        government: government,
+        license: req.file.path
+      });
 
+      await newLab.save();
+
+      res.status(201).json({ message: 'Lab registered successfully' });
+    } catch (error) {
+      // console.error(error);
+      const e = handleErrors(error)
+      res.status(500).json(e);
+    }
+  },
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
 
-      const patient = await Patient.findOne({ 'email.value': email });
-      if (!patient) {
+      let user = await Patient.findOne({ 'email.value': email });
+      let type = "p"
+
+      if (!user) {
+        user = await Doctor.findOne({ 'email.value': email });
+        type = "d"
+      }
+
+      if (!user) {
+        user = await Lab.findOne({ 'email.value': email });
+        type = "l"
+      }
+
+      if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
-      const isPasswordValid = await bcrypt.compare(password, patient.password);
+      const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
-      const token = jwt.sign({ id: patient._id }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
+      const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
 
       res.status(200).json({ token });
     } catch (error) {

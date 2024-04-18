@@ -7,7 +7,7 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'doctors_licenses/')
+    cb(null, 'labs_licenses/')
   },
     filename: function (req, file, cb) {
         const name = req.body.name.replace(/\s+/g, '_');
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// Route for registering a new doctor
-router.post('/register', upload.single('file'), authController.register_doctor);
+// Route for registering a new lab
+router.post('/register', upload.single('file'), authController.register_lab);
 
 module.exports = router;

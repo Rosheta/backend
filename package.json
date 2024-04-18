@@ -4,8 +4,8 @@
   "description": "backend for our graduation project (medical data manager blockchain based)",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "test": "jest",
     "seed": "node ./db/patients_seed.js; node ./db/chat_seed.js; node ./db/message_seed.js"
   },
