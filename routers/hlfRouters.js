@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const hlf = require('../HLF/contractServices');
+const controller = require('../controller/hlf' );
+const hlfController= controller
 
-router.get('/', async (req, res) => {
-  console.log('req.body', req.body);
-  const data = await hlf.getAllMedicalRecords();
-  res.send(data);
-});
+// Routes for GET requests
+router.get('/ch/all', hlfController.get.getAllMedicalRecords);
+router.get('/ipfs/get', hlfController.get.getFileFromIPFS);
+router.get('/ipfs/all', hlfController.get.getAllFilesFromIPFS);
 
-// create a new record
-router.get('/rec', async (req, res) => {
-  const { id, patientName, dob, diagnosis, medications, allergies, doctor } = req.body;
-  const data = await hlf.CreateMedicalRecord(id, patientName, dob, diagnosis, medications, allergies, doctor);
-  res.send(data);
-});
+// Routes for POST requests
+router.post('/ch/rec', hlfController.post.createMedicalRecord);
+router.post('/ipfs/upload', hlfController.post.uploadFileToIPFS);
+
+// Route for DELETE request
+router.delete('/ipfs/delete', hlfController.delete.deleteFileFromIPFS);
 
 module.exports = router;
