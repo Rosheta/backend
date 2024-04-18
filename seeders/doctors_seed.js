@@ -37,7 +37,7 @@ async function main() {
                     visible: true
                 },
                 password: password,
-                d_o_b: {
+                birthdate: {
                     value: faker.date.past(),
                     visible: true
                 },
