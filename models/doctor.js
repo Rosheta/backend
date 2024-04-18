@@ -1,38 +1,109 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator')
 
 const doctorSchema = new mongoose.Schema({
   name: {
-    f_name: { type: String },
-    l_name: { type: String }
+    type: String,
+    minlength: 2,
+    required: [true, "you must enter your name"]
   },
   phone_number: {
-    type: String,
-    unique: true
-  },
-  ssn: {
-    type: String,
-    unique: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    validate: {
-      validator: function(email) {
-        return /\S+@\S+\.\S+/.test(email);
-      },
-      message: props => `${props.value} is not a valid email address!`
+    value: {
+      type: String,
+      unique: [true, "phone number is already used"],
+      validate: [v => isLength(v, { min: 11, max: 11 }) && isNumeric(v), `not a valid phone number. Must be exactly 11 digits.`],
+      required: [true, "you must enter a phone number"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
     }
   },
-  password: { type: String },
-  d_o_b: { type: Date },
+  ssn: {
+    value: {
+      type: String,
+      unique: [true, "SSN is already used"],
+      validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
+  email: {
+    value: {
+      type: String,
+      unique: [true, "email is already used"],
+      validate: [isEmail, 'not a valid email'],
+      required: [true, "you must enter your email"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
+  password: {
+    type: String,
+    required: [true, "you must enter a password"],
+    validate: [isStrongPassword, 'not strong enough password'],
+  },
+  birthdate:{
+    value: {
+      type: [Date, "not a valid date type"],
+      required: [true, "you must enter your birth date"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
   gender: {
     type: String,
-    enum: ['m', 'f']
+    enum: ['m', 'f'],
+    required: [true, "you must enter your gender"]
   },
-  location: { type: String },
-  license: { type: String }, // Assuming the URL points to the picture of the license
-  department: { type: String },
-  degree: { type: String }
+  profile_picture: {
+    type: String,
+    default: null
+  },
+  username: {
+    type: String,
+    unique: [true, "username is already used"],
+  },
+  location: {
+    type: String,
+    required: [true, "you must enter a location"],
+  },
+  license: {
+    type: String,
+    default: "3ady ya zemeely"
+    // required: [true, "you must enter a license"]
+  }, // Assuming the URL points to the pdf of the license
+  department: {
+    type: String,
+    default: "lol",
+  },
+  government: {
+    type: String,
+    required: [true, "you must enter a government"],
+  }
+});
+
+// hash password and add username before saving
+doctorSchema.pre('save', async function(next) {
+  this.password = await bcrypt.hash(this.password, 10);
+
+  this.username = this.email.value.split('@')[0];
+  let usernameExists = await this.constructor.find({ username: this.username });
+  
+  let nonce = 1;
+  while (usernameExists) {
+    this.username = `${this.username}_${nonce}`;
+    nonce++;
+    usernameExists = await this.constructor.findOne({ username: this.username });
+  }
+  next();
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

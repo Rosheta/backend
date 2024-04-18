@@ -2,7 +2,7 @@ const Patient = require('../models/patient');
 const { faker } = require('@faker-js/faker');
 const dotenv = require('dotenv');
 const { writeFile, truncate } = require('fs')
-const db = require('./mongo')
+const db = require('../db/mongo')
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ async function main() {
     console.log('Database patients Cleared');
 
     const num_records = process.env.PATIENTS_SEED_COUNT;
-    truncate("./db/patients.txt", 0, (err) => {
+    truncate("./seeders/patients.txt", 0, (err) => {
         if (err) {
             console.error("Error truncating file:", err);
         }
@@ -20,7 +20,7 @@ async function main() {
         const phone_number = faker.number.int({ min: 10000000000, max: 99999999999 }).toString();
         const ssn = faker.number.int({ min: 10000000000000, max: 99999999999999 }).toString();
         const email = faker.internet.email();
-        const password = faker.internet.password();
+        const password = faker.internet.password({length: 15, prefix: "Ul@1"});
         try {
             const patient = new Patient({
                 name: faker.person.fullName(),
@@ -44,7 +44,7 @@ async function main() {
                 gender: faker.helpers.arrayElement(['m', 'f']),
                 profile_picture: faker.image.avatar()
             });
-            writeFile('./db/patients.txt', `${patient._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
+            writeFile('./seeders/patients.txt', `${patient._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
                 if (err)
                     console.log(err);
             });
