@@ -43,12 +43,12 @@ const authController = {
       
       // Create a new patient
       const newDoctor = new Doctor({ 
-        email: email, 
+        email: { value: email }, 
         password: password, 
         name: name,
-        phone_number: phone, 
-        ssn: ssn,
-        birthdate: birthdate,
+        phone_number: { value: phone }, 
+        ssn: { value: ssn },
+        birthdate: { value: birthdate },
         gender: gender,
         location : clinicPosition,
         government : government

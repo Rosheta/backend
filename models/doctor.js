@@ -9,21 +9,39 @@ const doctorSchema = new mongoose.Schema({
     required: [true, "you must enter your name"]
   },
   phone_number: {
-    type: String,
-    unique: [true, "phone number is already used"],
-    validate: [v => isLength(v, { min: 11, max: 11 }) && isNumeric(v), `not a valid phone number. Must be exactly 11 digits.`],
-    required: [true, "you must enter a phone number"]
+    value: {
+      type: String,
+      unique: [true, "phone number is already used"],
+      validate: [v => isLength(v, { min: 11, max: 11 }) && isNumeric(v), `not a valid phone number. Must be exactly 11 digits.`],
+      required: [true, "you must enter a phone number"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   ssn: {
-    type: String,
-    unique: [true, "SSN is already used"],
-    validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
+    value: {
+      type: String,
+      unique: [true, "SSN is already used"],
+      validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   email: {
-    type: String,
-    unique: [true, "email is already used"],
-    validate: [isEmail, 'not a valid email'],
-    required: [true, "you must enter your email"]
+    value: {
+      type: String,
+      unique: [true, "email is already used"],
+      validate: [isEmail, 'not a valid email'],
+      required: [true, "you must enter your email"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   password: {
     type: String,
@@ -31,8 +49,14 @@ const doctorSchema = new mongoose.Schema({
     validate: [isStrongPassword, 'not strong enough password'],
   },
   birthdate:{
-    type: [Date, "not a valid date type"],
-    required: [true, "you must enter your birth date"]
+    value: {
+      type: [Date, "not a valid date type"],
+      required: [true, "you must enter your birth date"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   gender: {
     type: String,
@@ -70,7 +94,7 @@ const doctorSchema = new mongoose.Schema({
 doctorSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, 10);
 
-  this.username = this.email.split('@')[0];
+  this.username = this.email.value.split('@')[0];
   let usernameExists = await this.constructor.find({ username: this.username });
   
   let nonce = 1;

@@ -2,7 +2,7 @@ const Message = require('../models/message');
 const Chat = require('../models/chat');
 const { faker } = require('@faker-js/faker');
 const dotenv = require('dotenv');
-const db = require('./mongo');
+const db = require('../db/mongo');
 
 dotenv.config();
 
@@ -14,14 +14,13 @@ async function main() {
 
     for (let i = 0; i < num_records; i++) {
         try {
-            const id = Math.floor(Math.random() * 100) + 1;
-            const chat = await Chat.findOne({ 'chatId': id });
-            
-            const sender = Math.random() < 0.5 ? chat.userId_1 : chat.userId_2;
-            const receiver = sender === chat.userId_1 ? chat.userId_2 : chat.userId_1;
+            const chat = await Chat.aggregate([{ $sample: { size: 1 } }]);
+            console.log(i);
+            const sender = Math.random() < 0.5 ? chat[0].userId_1 : chat[0].userId_2;
+            const receiver = sender === chat[0].userId_1 ? chat[0].userId_2 : chat[0].userId_1;
 
             const newMessage = new Message({
-                chatId: id,
+                chatId: chat[0]._id,
                 sender: sender,
                 receiver: receiver,
                 message: faker.lorem.sentence({ min: 3, max: 15 })
