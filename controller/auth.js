@@ -10,9 +10,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRE = process.env.JWT_EXPIRE;
 
 const authController = {
-  register: async (req, res) => {
+  register_patient: async (req, res) => {
     try {
-      const { email, password, name, phone, ssn, birthdate } = req.body;
+      const { email, password, name, phone, ssn, birthdate, gender } = req.body;
       
       // Create a new patient
       const newPatient = new Patient({ 
@@ -21,7 +21,33 @@ const authController = {
         name: name,
         phone_number: { value: phone }, 
         ssn: { value: ssn },
-        d_o_b: { value: birthdate },
+        birthdate: { value: birthdate },
+        gender: gender
+      });
+
+      await newPatient.save();
+
+      res.status(201).json({ message: 'Patient registered successfully' });
+    } catch (error) {
+      // console.error(error);
+      const e = handleErrors(error)
+      res.status(500).json(e);
+    }
+  },
+
+  register_doctor: async (req, res) => {
+    try {
+      const { email, password, name, phone, ssn, birthdate, gender } = req.body;
+      
+      // Create a new patient
+      const newPatient = new Patient({ 
+        email: { value: email }, 
+        password: password, 
+        name: name,
+        phone_number: { value: phone }, 
+        ssn: { value: ssn },
+        birthdate: { value: birthdate },
+        gender: gender
       });
 
       await newPatient.save();

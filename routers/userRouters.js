@@ -5,9 +5,6 @@ const profileController = require('../controller/profile');
 const chatController = require('../controller/chats');
 const authMiddleware = require('../middleware/auth');
 
-// Route for registering a new patient/doctor
-router.post('/register', authController.register);
-
 // Route for patient/doctor login
 router.post('/login', authController.login);
 
