@@ -26,7 +26,7 @@ const profileController = {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            const pp = `${currentIP}:5000/images/${user.profile_picture}`
+            const pp = user.profile_picture.startsWith("https://")? user.profile_picture : `http://${currentIP}:5000/images/${user.profile_picture}`
             const responseData = {
                 "name": user.name,
                 "email": user.email,
@@ -38,7 +38,7 @@ const profileController = {
                 "government": (userType === 'd' || userType === 'l') ? user.government : undefined,
                 "department": userType === 'd'? user.department: undefined,
                 "birthdate": (userType === 'p' || userType === 'd') ? user.birthdate : undefined,
-                "ssn": (userType === 'p' || userType === 'd') ? user.ssn.value : undefined,
+                "ssn": (userType === 'p' || userType === 'd') ? user.ssn : undefined,
             }
             return res.status(200).json(responseData);
         } catch (error) {
@@ -64,7 +64,7 @@ const profileController = {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            const pp = `${currentIP}:5000/images/${user.profile_picture}`
+            const pp = user.profile_picture.startsWith("https://")? user.profile_picture : `http://${currentIP}:5000/images/${user.profile_picture}`
             // Constructing response data
             const responseData = {
                 "name": user.name,
@@ -97,7 +97,7 @@ const profileController = {
                     email: email,
                     name: name,
                     phone_number: phone,
-                    ssn: { value: ID },
+                    ssn: ID,
                     birthdate: date,
                     gender: gender,
                     username: userName,
@@ -107,7 +107,7 @@ const profileController = {
                     email: email,
                     name: name,
                     phone_number: phone,
-                    ssn: { value: ID },
+                    ssn: ID,
                     birthdate: date,
                     gender: gender,
                     username: userName,
@@ -142,12 +142,12 @@ const profileController = {
         const userType = req.type;
         const file = req.file;
         try {
-            let user = null
-            if(userType === 'p') {
+            let user = null;
+            if (userType === 'p') {
                 user = await Patient.findById(userId);    
-            }else if(userType === 'd'){
+            } else if (userType === 'd') {
                 user = await Doctor.findById(userId);    
-            }else if (userType === 'l') {
+            } else if (userType === 'l') {
                 user = await Lab.findById(userId);
             }
 
@@ -155,8 +155,11 @@ const profileController = {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            user.profile_picture = file.filename;
-            await user.save();
+            const updateResult = await user.updateOne({ profile_picture: file.filename });
+
+            if (updateResult.nModified === 0) {
+                return res.status(400).json({ error: 'Profile picture could not be updated' });
+            }
 
             return res.status(200).json({ message: 'Profile picture updated successfully' });
         } catch (error) {

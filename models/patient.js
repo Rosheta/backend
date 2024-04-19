@@ -21,15 +21,9 @@ const patientSchema = new mongoose.Schema({
     }
   },
   ssn: {
-    value: {
       type: String,
       unique: [true, "SSN is already used"],
       validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    }
   },
   email: {
     value: {

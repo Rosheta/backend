@@ -28,10 +28,7 @@ async function main() {
                     value: phone_number,
                     visible: true
                 },
-                ssn: {
-                    value: ssn,
-                    visible: true
-                },
+                ssn: ssn,
                 email: {
                     value: email,
                     visible: true
@@ -45,13 +42,15 @@ async function main() {
                 profile_picture: faker.image.avatar(),
                 location: "sedi beshr",
                 government: faker.helpers.arrayElement(["Alexandria", "Cairo"]),
-                department: faker.helpers.arrayElement(["Neurology", "Otology"])
+                department: faker.helpers.arrayElement(["Neurology", "Otology"]),
+                license: "enta zay el fol",
             });
-            writeFile('./seeders/doctors.txt', `${doctor._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
+            await doctor.save();
+            const line = `${doctor._id} ---> ${email} ---> ${password}`;
+            writeFile('./seeders/doctors.txt', i<num_records-1 ? `${line}\n` : line, { flag: 'a' }, (err) => {
                 if (err)
                     console.log(err);
             });
-            await doctor.save();
         }
         catch (error) {
             console.log(error)
