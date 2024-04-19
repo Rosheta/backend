@@ -4,10 +4,10 @@
   "description": "backend for our graduation project (medical data manager blockchain based)",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "export NODE_ENV=production && node index.js",
+    "dev": "export NODE_ENV=development && nodemon index.js",
     "test": "jest",
-    "seed": "node ./db/patients_seed.js; node ./db/chat_seed.js; node ./db/message_seed.js"
+    "seed": "export NODE_ENV=development && node ./seeders/patients_seed.js && node ./seeders/chat_seed.js && node ./seeders/message_seed.js && node ./seeders/lab_seed.js"
   },
   "author": "",
   "license": "ISC",

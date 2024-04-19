@@ -20,6 +20,7 @@ const authMiddleware = {
 
       // Attach the decoded user information to the request object
       req.user = decoded.id;
+      req.type = decoded.type
 
       // Proceed to the next middleware or route handler
       next();

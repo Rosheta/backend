@@ -4,6 +4,19 @@ const authController = require('../controller/auth');
 const profileController = require('../controller/profile');
 const chatController = require('../controller/chats');
 const authMiddleware = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'images/')
+  },
+    filename: function (req, file, cb) {
+        const name = req.user.replace(/\s+/g, '_');
+        const filename = name + '-' + Date.now() + path.extname(file.originalname)
+        cb(null, filename)
+  }
+})
 
 // Route for patient/doctor login
 router.post('/login', authController.login);
@@ -15,7 +28,8 @@ router.put('/profile', authMiddleware.authenticate, profileController.updateProf
 
 router.get('/profileByID', authMiddleware.authenticate, profileController.getProfile);
 
-router.put('/profilePicture', authMiddleware.authenticate, profileController.updateProfilePicture);
+const upload = multer({ storage: storage })
+router.put('/profile/picture', authMiddleware.authenticate, upload.single('photo'), profileController.updateProfilePicture);
 
 // Route for getting chats
 router.get('/getChats' , authMiddleware.authenticate,chatController.chats)
