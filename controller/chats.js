@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const chat = require('../models/chat');
 const patient = require('../models/patient');
 const message = require('../models/message');
+const doctor = require('../models/doctor');
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -20,7 +21,7 @@ const chatController = {
                     { userId_2: userId }
                 ]
             });
-            const chatIds = userChats.map(chat => chat.chatId);
+            const chatIds = userChats.map(chat => chat._id.toString());
             const friends = [];
 
             for (const chatId of chatIds) {
@@ -35,10 +36,14 @@ const chatController = {
                     } else {
                         friendId = lastMessage.sender;
                     }
-            
                     const friend = await patient.findById(friendId);
                     if (friend) {
                         friendName = friend.name;
+                    }
+                    else{
+                        const friend = await doctor.findById(friendId);
+                        friendName = friend.name;
+
                     }
             
                     const formattedMessage = {
@@ -59,10 +64,21 @@ const chatController = {
     },
     
     chatContent: async (req, res) => {
-        try {    
-            const userId = req.user;
-            const chatId = parseInt(req.query.chatId);
-            const Chat = await chat.findOne({ chatId });
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+
+
+        if (!token) {
+            return res.status(401).json({ error: 'Token is missing' });
+        }
+
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            const userId = decoded.id;
+            const chatId = req.query.chatId;
+            const page = parseInt(req.query.page); 
+            const pageSize = 30;
+
+            const Chat = await chat.findById(chatId);
             if (!Chat) {
                 return res.status(404).json({ error: 'Chat not found' });
             }
@@ -71,11 +87,21 @@ const chatController = {
                 return res.status(403).json({ error: 'Unauthorized access to chat' });
             }
 
-            const messages = await message.find({ chatId });
+            // const messages = await message.find({ chatId });
 
-            if (!messages) {
-                return res.status(404).json({ error: 'No messages found for the chatId' });
+            // if (!messages) {
+            //     return res.status(404).json({ error: 'No messages found for the chatId' });
+            // }
+            let messages;
+            if (page === 1) {
+                messages = await message.find({ chatId }).sort({ timestamp: -1 }).limit(pageSize);
+            } else {
+                messages = await message.find({ chatId })
+                    .sort({ timestamp: -1 })
+                    .skip((page - 1) * pageSize)
+                    .limit(pageSize);
             }
+            messages = messages.reverse()
     
             const formattedMessages = messages.map(message => ({
                 sender: message.sender,
@@ -86,17 +112,17 @@ const chatController = {
             return res.status(200).json({ userId, messages: formattedMessages });
         }catch (error) {
             console.log(error)
-            return res.status(401).json({ error: 'Error' });
+            return res.status(401).json({ error: 'Token is invalid' });
         }
     },
 
+
     startChat: async (req, res) => {
-    
+
         try {         
             const currentUserId = req.user;
             const anotherUserId = req.body.userId;
     
-            // Check if a chat already exists with the given pair of user IDs
             const existingChat = await chat.findOne({
                 $or: [
                     { userId_1: currentUserId, userId_2: anotherUserId },
@@ -105,24 +131,20 @@ const chatController = {
             });
     
             if (existingChat) {
-                // If a chat already exists, return an error
-                return res.status(400).json({ error: 'Chat already exists' });
+                return res.status(200).json({chatId: existingChat._id.toString() });
             }
     
-            // Create a new chat document
             const newChat = new chat({
                 userId_1: currentUserId,
                 userId_2: anotherUserId
             });
     
-            // Save the new chat document
             await newChat.save();
     
-            // Respond with success message
-            return res.status(200).json({ message: 'Chat started successfully' });
+            return res.status(200).json({chatId: newChat._id.toString() });
         } catch (error) {
             console.log(error);
-            return res.status(401).json({ error: 'Token is invalid' });
+            return res.status(500).json({ error: 'Internal server error' });
         }
     },
 
@@ -145,7 +167,7 @@ const chatController = {
 
     getReceiverId : async (chatId, senderId) => {
         try {
-            const chatData = await chat.findOne({ chatId });
+            const chatData = await chat.findById( chatId );
             if (!chatData) {
                 throw new Error('Chat not found');
             }

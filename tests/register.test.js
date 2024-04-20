@@ -1,4 +1,4 @@
-const chatController = require('../controller/chats.js');
+const authController = require('../controller/auth');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Message = require('../models/message');
@@ -8,7 +8,7 @@ const Patient = require('../models/patient');
 // Mock JWT_SECRET for testing purposes
 process.env.JWT_SECRET = 'test-secret';
 
-describe('chatController', () => {
+describe('authController', () => {
   // Mock JWT verification
   jest.mock('jsonwebtoken', () => ({
     verify: jest.fn().mockReturnValue({ id: 'test-user-id' })
@@ -35,7 +35,7 @@ describe('chatController', () => {
       // Arrange
       const senderId = 'senderId';
       const receiverId = 'receiverId';
-      const chatId = new mongoose.Types.ObjectId();
+      const chatId = 5;
       const message = 'Hello, world!';
 
       // Act
@@ -53,11 +53,11 @@ describe('chatController', () => {
   describe('getReceiverId', () => {
     it('should return the receiver ID for a given chat ID and sender ID', async () => {
       // Arrange
+      const chatId = 123;
       const senderId = '65fd9bcb0ed83e13f6a25d67';
       const receiverId = '65fd9bcb0ed83e13f6a25d32';
-      const chatData = new Chat({ userId_1: senderId, userId_2: receiverId });
+      const chatData = new Chat({ chatId: chatId, userId_1: senderId, userId_2: receiverId });
       await chatData.save();
-      chatId = chatData._id.toString();
 
       // Act
       const result = await chatController.getReceiverId(chatId, senderId);
@@ -68,7 +68,7 @@ describe('chatController', () => {
 
     it('should throw an error if chat is not found', async () => {
       // Arrange
-      const chatId = new mongoose.Types.ObjectId();
+      const chatId = 456;
       const senderId = '65fd9bcb0ed83e13f6a25d67';
 
       // Act & Assert
