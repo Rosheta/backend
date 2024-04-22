@@ -1,44 +1,76 @@
 const Doctor = require('../models/doctor');
+const Patient = require('../models/patient');
+const Lab = require('../models/lab');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
 const searchController = {
     search: async (req, res) => {
-        const query = req.body.query;
-        const location = req.body.location;
-        const specialization = req.body.specialization;
+        const { query, location, specialization, organization } = req.body;
         console.log(query);
         console.log(location);
         console.log(specialization);
-        const filter = {};
+        console.log(organization);
+        if(query === "") return res.status(200).json([]);
 
-        // Construct the query condition based on the provided parameters
-        if (query) {
-            // Search by name approximately matching the query (case-insensitive)
-            filter.name = { $regex: query, $options: 'i' };
+        let result = [];
+        
+        if (organization === 'Patient') {
+            const filter = {};
+            if (query) {
+                filter.name = { $regex: query, $options: 'i' };
+            }
+            result = await Patient.find(filter).limit(20);
+        } else if (organization === 'Lab') {
+            const filter = {};
+            if (query) {
+                filter.name = { $regex: query, $options: 'i' };
+            }
+            if (location && location !== 'Any') {
+                filter.location = { $regex: '^' + location, $options: 'i' };
+            }
+            result = await Lab.find(filter).limit(20);
+        } else if (organization === 'Doctor') {
+            const filter = {};
+            if (query) {
+                filter.name = { $regex: query, $options: 'i' };
+            }
+            if (location && location !== 'Any') {
+                filter.location = { $regex: '^' + location, $options: 'i' };
+            }
+            if (specialization && specialization !== 'Any') {
+                filter.department = { $regex: specialization, $options: 'i' };
+            }
+            result = await Doctor.find(filter).limit(20);
+        } else if (organization === 'Any') {
+            const patientFilter = {};
+            const labFilter = {};
+            const doctorFilter = {};
+
+            if (query) {
+                patientFilter.name = { $regex: query, $options: 'i' };
+                labFilter.name = { $regex: query, $options: 'i' };
+                doctorFilter.name = { $regex: query, $options: 'i' };
+            }
+            // if (location && location !== 'Any') {
+            //     // patientFilter.location = { $regex: '^' + location, $options: 'i' };
+            //     labFilter.location = { $regex: '^' + location, $options: 'i' };
+            //     doctorFilter.location = { $regex: '^' + location, $options: 'i' };
+            // }
+            // if (specialization && specialization !== 'Any') {
+            //     doctorFilter.department = { $regex: specialization, $options: 'i' };
+            // }
+
+            const patientResults = await Patient.find(patientFilter).limit(10);
+            const labResults = await Lab.find(labFilter).limit(10);
+            const doctorResults = await Doctor.find(doctorFilter).limit(10);
+
+            // Merge and deduplicate results from all collections
+            result = [...doctorResults, ...labResults, ...patientResults];
         }
-
-        if (location && location !== 'Any') {
-            // Search by location if specified and not 'Any'
-            filter.location = { $regex: '^' + location, $options: 'i' };
-        }
-
-        if (specialization && specialization !== 'Any') {
-            // Search by specialization if specified and not 'Any'
-            filter.department = { $regex: specialization, $options: 'i' };
-        }
-
-        // Perform the MongoDB query with the constructed filter
-        const result = await Doctor.find(filter).limit(20);
         console.log(result);
-
-        if(query == ""){
-            return res.status(200).json([]);
-        } 
-        else {
-            return res.status(200).json(result);
-        }
+        return res.status(200).json(result);
     }
 };
 
