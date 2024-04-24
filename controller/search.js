@@ -7,9 +7,9 @@ dotenv.config();
 
 const searchController = {
     search: async (req, res) => {
-        const { query, location, specialization, organization } = req.body;
+        const { query, government, specialization, organization } = req.body;
         console.log(query);
-        console.log(location);
+        console.log(government);
         console.log(specialization);
         console.log(organization);
         if(query === "") return res.status(200).json([]);
@@ -27,8 +27,8 @@ const searchController = {
             if (query) {
                 filter.name = { $regex: query, $options: 'i' };
             }
-            if (location && location !== 'Any') {
-                filter.location = { $regex: '^' + location, $options: 'i' };
+            if (government && government !== 'Any') {
+                filter.government = { $regex: '^' + government, $options: 'i' };
             }
             result = await Lab.find(filter).limit(20);
         } else if (organization === 'Doctor') {
@@ -36,8 +36,8 @@ const searchController = {
             if (query) {
                 filter.name = { $regex: query, $options: 'i' };
             }
-            if (location && location !== 'Any') {
-                filter.location = { $regex: '^' + location, $options: 'i' };
+            if (government && government !== 'Any') {
+                filter.government = { $regex: '^' + government, $options: 'i' };
             }
             if (specialization && specialization !== 'Any') {
                 filter.department = { $regex: specialization, $options: 'i' };
@@ -53,10 +53,10 @@ const searchController = {
                 labFilter.name = { $regex: query, $options: 'i' };
                 doctorFilter.name = { $regex: query, $options: 'i' };
             }
-            // if (location && location !== 'Any') {
-            //     // patientFilter.location = { $regex: '^' + location, $options: 'i' };
-            //     labFilter.location = { $regex: '^' + location, $options: 'i' };
-            //     doctorFilter.location = { $regex: '^' + location, $options: 'i' };
+            // if (government && government !== 'Any') {
+            //     // patientFilter.government = { $regex: '^' + government, $options: 'i' };
+            //     labFilter.government = { $regex: '^' + government, $options: 'i' };
+            //     doctorFilter.government = { $regex: '^' + government, $options: 'i' };
             // }
             // if (specialization && specialization !== 'Any') {
             //     doctorFilter.department = { $regex: specialization, $options: 'i' };
