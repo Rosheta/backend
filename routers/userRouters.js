@@ -29,5 +29,7 @@ router.post('/startChat' , authMiddleware.authenticate,chatController.startChat)
 
 // Route for search
 router.post('/search' , searchController.search)
+// router.post('/search' , authMiddleware.authenticate , searchController.search)
+
 
 module.exports = router;
