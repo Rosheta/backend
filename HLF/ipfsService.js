@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 
 dotenv.config();
-ipfsKey = process.env.IPFS_KEY || 'FzfsXnghRuapU5Rg4PkF95oXzvVd1EPT9Al4L8pk';
-ipfsUrl = process.env.IPFS_URL || 'https://65f4cc0c14d31cebc0d4b9c0.ipfs-us-west-2.spydra.app';
+ipfsKey = 'FzfsXnghRuapU5Rg4PkF95oXzvVd1EPT9Al4L8pk';
+ipfsUrl = 'https://65f4cc0c14d31cebc0d4b9c0.ipfs-us-west-2.spydra.app';
 
 
 // upload a file to IPFS
