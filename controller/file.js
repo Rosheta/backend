@@ -38,10 +38,11 @@ const fileController = {
     },
     getUserFiles : async (req, res) => {
         try{
-            console.log(req.user)
             const userId = req.user;
             const user = await patient.findById(userId);
-            console.log(user)
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
             const username = user.username;
             const userFiles = await File.find({ username });
     
@@ -49,10 +50,10 @@ const fileController = {
                 Filename: file.fileName,
                 Extension: file.extension,
                 Hash: file.hash,
-                date: file.timestamp // Assuming timestamp field contains the upload date
+                date: file.timestamp 
             }));
     
-            // res.status(200).json({ files: filesList });
+            res.status(200).json({ files: filesList });
         } catch (e) {
             console.error('Error getting files:', e);
             res.status(500).json(e);
