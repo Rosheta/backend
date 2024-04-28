@@ -1,5 +1,6 @@
 const patientRouter = require('./routers/patientRouters.js');
 const doctorRouter = require('./routers/doctorRouters.js');
+const labRouter = require('./routers/labRouters.js');
 const userRouter = require('./routers/userRouters.js');
 const hlfRouter = require('./routers/hlfRouters.js');
 const ipfsRouter = require('./routers/ipfsRouters.js');
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 app.use('/', userRouter);
 app.use('/patient', patientRouter);
 app.use('/doctor', doctorRouter);
+app.use('/lab', labRouter);
 app.use('/hlf', hlfRouter);
 app.use('/ipfs', ipfsRouter);
 

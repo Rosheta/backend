@@ -35,7 +35,7 @@ describe('chatController', () => {
       // Arrange
       const senderId = 'senderId';
       const receiverId = 'receiverId';
-      const chatId = 5;
+      const chatId = new mongoose.Types.ObjectId();
       const message = 'Hello, world!';
 
       // Act
@@ -53,11 +53,11 @@ describe('chatController', () => {
   describe('getReceiverId', () => {
     it('should return the receiver ID for a given chat ID and sender ID', async () => {
       // Arrange
-      const chatId = 123;
       const senderId = '65fd9bcb0ed83e13f6a25d67';
       const receiverId = '65fd9bcb0ed83e13f6a25d32';
-      const chatData = new Chat({ chatId: chatId, userId_1: senderId, userId_2: receiverId });
+      const chatData = new Chat({ userId_1: senderId, userId_2: receiverId });
       await chatData.save();
+      chatId = chatData._id.toString();
 
       // Act
       const result = await chatController.getReceiverId(chatId, senderId);
@@ -68,7 +68,7 @@ describe('chatController', () => {
 
     it('should throw an error if chat is not found', async () => {
       // Arrange
-      const chatId = 456;
+      const chatId = new mongoose.Types.ObjectId();
       const senderId = '65fd9bcb0ed83e13f6a25d67';
 
       // Act & Assert
