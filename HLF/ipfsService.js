@@ -50,17 +50,22 @@ async function uploadFileToIPFS(file) {
 
 
 // get a file from IPFS
+
 async function getFileFromIPFS(hash) {
-    
     try {
-        const response = await axios.post(`${ipfsUrl}/ipfs/cat?arg=${hash}`, null,{ headers });
+        const response = await axios.post(`${ipfsUrl}/ipfs/cat?arg=${hash}`, null,{ headers: headers, responseType: 'arraybuffer' });
         console.log('File from IPFS:', response);
+
+       
         return response.data;
     } catch (error) {
         console.error('Error:', error);
         return error;
     }
 }
+
+
+
 // delete a file from IPFS
 async function deleteFileFromIPFS(hash) {
     try {
