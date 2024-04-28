@@ -58,6 +58,30 @@ const fileController = {
             console.error('Error getting files:', e);
             res.status(500).json(e);
         }
+    },
+    deleteFile : async (req, res) => {
+        try {
+            const userId = req.user;
+            const hash = req.body.hash;
+
+            const file = await File.findOne({ hash });
+
+            if (!file) {
+                return res.status(404).json({ error: 'File not found' });
+            }
+
+            const user = await patient.findById(userId);
+            if (!user || user.username !== file.username) {
+                return res.status(403).json({ error: 'Unauthorized' });
+            }
+
+            await File.deleteOne({ hash });
+
+            res.status(200).json({ message: 'File deleted successfully' });
+        } catch (e) {
+            console.error('Error deleting file:', e);
+            res.status(500).json(e);
+        }
     }
 };
 

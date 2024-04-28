@@ -9,5 +9,6 @@ router.post('/register', authController.register_patient);
 
 router.get('/getFiles', authMiddleware.authenticate,fileController.getUserFiles);
 
+router.delete('/deleteFile', authMiddleware.authenticate,fileController.deleteFile);
 
 module.exports = router;
