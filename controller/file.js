@@ -62,7 +62,7 @@ const fileController = {
     deleteFile : async (req, res) => {
         try {
             const userId = req.user;
-            const hash = req.body.hash;
+            const hash = req.query.hash;
 
             const file = await File.findOne({ hash });
 
