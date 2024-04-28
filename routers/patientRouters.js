@@ -6,7 +6,7 @@ const fileController = require('../controller/file');
 // Route for registering a new patient/doctor
 router.post('/register', authController.register_patient);
 
-router.post('/getFiles', fileController.getUserFiles);
+router.get('/getFiles', fileController.getUserFiles);
 
 
 module.exports = router;
