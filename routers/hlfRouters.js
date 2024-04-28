@@ -6,14 +6,17 @@ const hlfController= controller
 
 // Routes for GET requests
 router.get('/ch/all', hlfController.get.getAllMedicalRecords);
-router.get('/ipfs/get', hlfController.get.getFileFromIPFS);
-router.get('/ipfs/all', hlfController.get.getAllFilesFromIPFS);
+router.get('/ch/rec', hlfController.get.getMedicalRecord);
+router.get('/ch/cd', hlfController.get.getAllCronicalDiseases);
+
 
 // Routes for POST requests
 router.post('/ch/rec', hlfController.post.createMedicalRecord);
-router.post('/ipfs/upload', hlfController.post.uploadFileToIPFS);
+router.post('/ch/upd', hlfController.post.updateMedicalRecord);
+
+
 
 // Route for DELETE request
-router.delete('/ipfs/delete', hlfController.delete.deleteFileFromIPFS);
+router.delete('/ch/rec', hlfController.delete.DeleteMedicalRecord);
 
 module.exports = router;

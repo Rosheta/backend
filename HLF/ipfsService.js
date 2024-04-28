@@ -17,13 +17,12 @@ const FormData = require('form-data');
 
 async function uploadFileToIPFS(file) {
     try {
-        console.log('file', file);
-        const fileSize = fs.statSync(file.path).size;
+        const fileSize = file.size;
         let response;
         
         if (fileSize <= 4 * 1024 * 1024) {
             const formData = new FormData();
-            formData.append('fileName', fs.createReadStream(file.path));
+            formData.append('file', file.buffer, { filename: file.originalname });
             
             response = await axios.post(`${ipfsUrl}/ipfs/add`, formData, {
                 headers: {
@@ -34,35 +33,39 @@ async function uploadFileToIPFS(file) {
             });
         } else {
             // Use /ipfs/addByUrl endpoint for files larger than 4MB
-            response = await axios.post(`${ipfsUrl}/ipfs/addByUrl?url=${file.path}`, {}, {
+            response = await axios.post(`${ipfsUrl}/ipfs/addByUrl?url=${file.originalname}`, {}, {
                 headers: {
                     'accept': '*/*',
                     'X-API-KEY': ipfsKey
                 }
             });
         }
-
-        console.log('File uploaded to IPFS:', response.data);
+        console.log('File uploaded to IPFS:', response);
         return response.data;
     } catch (error) {
         console.error('Error:', error);
         return error;
     }
 }
-
 
 
 // get a file from IPFS
+
 async function getFileFromIPFS(hash) {
-    
     try {
-        const response = await axios.post(`${ipfsUrl}/ipfs/cat?arg=${hash}`, null,{ headers });
+        const response = await axios.post(`${ipfsUrl}/ipfs/cat?arg=${hash}`, null,{ headers: headers, responseType: 'arraybuffer' });
+        console.log('File from IPFS:', response);
+
+       
         return response.data;
     } catch (error) {
         console.error('Error:', error);
         return error;
     }
 }
+
+
+
 // delete a file from IPFS
 async function deleteFileFromIPFS(hash) {
     try {

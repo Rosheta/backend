@@ -10,7 +10,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const chatsController = require('./controller/chats');
-const db = require('./db/mongo')
+// const db = require('./db/mongo')
 const dotenv = require('dotenv');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('lol Rosheta!');
+  res.send(' Rosheta!');
 });
 
 
@@ -36,6 +36,7 @@ app.use('/doctor', doctorRouter);
 app.use('/lab', labRouter);
 app.use('/hlf', hlfRouter);
 app.use('/ipfs', ipfsRouter);
+
 
 io.on('connection', (socket) => {
   console.log('A user connected');
