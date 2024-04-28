@@ -10,7 +10,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const chatsController = require('./controller/chats');
-// const db = require('./db/mongo')
+const searchController = require('./controller/search');
+
+const db = require('./db/mongo')
+
 const dotenv = require('dotenv');
 const http = require('http');
 const socketIo = require('socket.io');
