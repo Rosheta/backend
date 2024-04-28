@@ -6,6 +6,7 @@ const path = require('path');
 const patient = require('../models/patient');
 const lab = require('../models/lab');
 const doctor = require('../models/doctor');
+const File = require('../models/file');
 
 const ipfsService = require('../HLF/ipfsService');
 
@@ -15,23 +16,23 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const fileController = {
     upload : async (req, res) => {
         try {        
-            console.log(req)
+            console.log(req.file)
             const userId = req.user;
             const file = req.file;
-            console.log('file', file);
             const ipfsData = await ipfsService.uploadFileToIPFS(file);
+            console.log(ipfsData)
             const newFile = new File({
                 username: req.body.username, 
-                hash: ipfsData.hash,
-                fileName: file.filename,
+                hash: ipfsData.Hash,
+                fileName: req.file.originalname,
                 extension: path.extname(file.originalname)
             });
-          
+            console.log(newFile)
             await newFile.save();
           
             res.status(201).json({ message: 'Success' });
-        } catch (error) {
-            console.error('Error uploading file to IPFS and saving hash:', error);
+        } catch (e) {
+            console.error('Error uploading file to IPFS and saving hash:', e);
             res.status(500).json(e);
         }
     },
