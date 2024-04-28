@@ -38,20 +38,23 @@ const fileController = {
     },
     getUserFiles : async (req, res) => {
         try{
+            console.log(req.user)
             const userId = req.user;
-            const username = await Patient.getUsernameById(userId);
+            const user = await patient.findById(userId);
+            console.log(user)
+            const username = user.username;
             const userFiles = await File.find({ username });
     
             const filesList = userFiles.map(file => ({
-                Filename: file.name,
+                Filename: file.fileName,
                 Extension: file.extension,
                 Hash: file.hash,
                 date: file.timestamp // Assuming timestamp field contains the upload date
             }));
     
-            res.status(200).json({ files: filesList });
-        } catch (error) {
-            console.error('Error getting files:', error);
+            // res.status(200).json({ files: filesList });
+        } catch (e) {
+            console.error('Error getting files:', e);
             res.status(500).json(e);
         }
     }
