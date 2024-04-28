@@ -2,11 +2,13 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const networkUrl = process.env.NETWORK_URL || 'https://65f4ccf914d31cebc0d4bc58.spydra.app/fabric/66155032510df7de2bdcec77/ledger/transact';
-const apiKey = process.env.API_KEY || 'WaFCDYtQ8v2mQS6V62moN8nSWaVQzlBc8RTQ5WJ0';
+
+const networkUrl =  'https://65f4ccf914d31cebc0d4bc58.spydra.app/fabric/66155032510df7de2bdcec77/ledger/transact';
+const apiKey =  'WaFCDYtQ8v2mQS6V62moN8nSWaVQzlBc8RTQ5WJ0';
 const headers = {
     'accept': 'application/json',
-    'X-API-KEY': apiKey
+    'X-API-KEY': apiKey,
+    'Content-Type': 'application/json'
 };
 
 // get all medical records from the blockchain service
@@ -49,24 +51,30 @@ async function DeleteMedicalRecord(recordId) {
 }
 
 // add a medical record to the blockchain service
-async function CreateMedicalRecord(id, patientName, dob, diagnosis, medications, allergies, doctor) {
+async function CreateMedicalRecord(appoiment) {
+      const {Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId} = appoiment;
+      console.log('CreateMedicalRecord', Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId);
+
     try {
         const response = await axios.post(networkUrl, {
             "functionName": "CreateMedicalRecord",
-            "args": [id, patientName, dob, diagnosis, medications, allergies, doctor]
+            "args": [Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId]
         }, { headers });
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error;
     }
 }
 
 // update a medical record in the blockchain service
-async function UpdateMedicalRecord(id, patientName, dob, diagnosis, medications, allergies, doctor) {
+async function UpdateMedicalRecord(appoiment) {
+    const {Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId} = appoiment;
+
     try {
         const response = await axios.post(networkUrl, {
             "functionName": "UpdateMedicalRecord",
-            "args": [id, patientName, dob, diagnosis, medications, allergies, doctor]
+            "args": [Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId]
         }, { headers });
         return response.data;
     } catch (error) {
@@ -74,11 +82,24 @@ async function UpdateMedicalRecord(id, patientName, dob, diagnosis, medications,
     }
 }
 
+// get all chronic dieases from the blockchain servic per patient
+async function getChronicDieases(PatientId) {
+    try {
+        const response = await axios.post(networkUrl, {
+            "functionName": "GetAllChronicDiseasesForOnePatient",
+            "args": [PatientId]
+        }, { headers });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 // export the functions
 module.exports = {
     getAllMedicalRecords,
     ReadMedicalRecord,
     DeleteMedicalRecord,
     CreateMedicalRecord,
-    UpdateMedicalRecord
+    UpdateMedicalRecord,
+    getChronicDieases
 };
