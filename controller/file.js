@@ -21,10 +21,11 @@ const fileController = {
             const file = req.file;
             const ipfsData = await ipfsService.uploadFileToIPFS(file);
             console.log(ipfsData)
+            let name = path.parse(req.file.originalname).name
             const newFile = new File({
                 username: req.body.username, 
                 hash: ipfsData.Hash,
-                fileName: req.file.originalname,
+                fileName: name,
                 extension: path.extname(file.originalname)
             });
             console.log(newFile)
@@ -82,6 +83,29 @@ const fileController = {
             console.error('Error deleting file:', e);
             res.status(500).json(e);
         }
+    },
+
+    showFile : async (req,res) => {
+        try{
+            const userId = req.user;
+            const hash = req.query.hash;
+            const file = await File.findOne({ hash });
+
+            if (!file) {
+                return res.status(404).json({ error: 'File not found' });
+            }
+
+            const user = await patient.findById(userId);
+            if (!user || user.username !== file.username) {
+                return res.status(403).json({ error: 'Unauthorized' });
+            }
+            const bytes = await ipfsService.getFileFromIPFS(hash);
+            res.status(200).json({ message: 'File sent successfully' });
+        } catch (e) {
+            console.error('Error showing file:', e);
+            res.status(500).json(e);
+        }
+
     }
 };
 
