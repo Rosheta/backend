@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
-const upload_lab_documents = multer({dest:'upload_lab_documents/'})
+const upload_lab_documents = multer()
 
 // Route for registering a new lab
 router.post('/register', upload.single('file'), authController.register_lab);
