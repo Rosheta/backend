@@ -9,7 +9,7 @@ const URI = process.env.URI;
 mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: 'Rosheta'
+  dbName: 'rosheta'
 })
 .catch((err) => {
   console.log("Mongoose Error: " + err);
