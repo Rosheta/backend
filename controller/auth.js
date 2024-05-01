@@ -93,7 +93,7 @@ const authController = {
   },
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { email, password, fcmToekn } = req.body;
 
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
