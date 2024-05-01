@@ -119,13 +119,21 @@ const authController = {
 
       const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
 
-      // add the username and the token to the firebase database
-      const newUserToekn = new Firebase({ 
-        username: user.username,
-        token: devicetoekn
-      });
+      // Check if the username already exists in the database
+      const existingUser = await Firebase.findOne({ username: user.username });
 
-      await newUserToekn.save();
+      if (existingUser) {
+          // Username already exists, update the token
+          existingUser.token = deviceToken;
+          await existingUser.save();
+      } else {
+          // Username doesn't exist, create a new entry
+          const newUserToken = new Firebase({
+              username: user.username,
+              token: deviceToken
+          });
+          await newUserToken.save();
+      }
 
       res.status(200).json({ token });
     } catch (error) {
