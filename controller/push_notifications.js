@@ -74,7 +74,7 @@ const pushNotificationsController = {
                     orderId: "123456",
                     orderDate: "2024-4-30"
                 },
-                token: "doctorToekn"
+                token: doctorToekn
 
             };
             admin.messaging().send(message).then((response) => {

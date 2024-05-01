@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 const chatsController = require('./controller/chats');
 const searchController = require('./controller/search');
 
-//const db = require('./db/mongo')
+const db = require('./db/mongo')
 
 const dotenv = require('dotenv');
 const http = require('http');
