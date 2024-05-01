@@ -56,7 +56,7 @@ const pushNotificationsController = {
 
 
     giveAccess : async (req,res) => {
-        let doctorToekn = await Firebase.find({username : req.body.username},{projection: {toekn:1}});
+        let doctorToekn = await Firebase.find({username : req.body.username});
 
         let userId = req.user;
         let user = await Patient.findById(userId);
@@ -66,7 +66,7 @@ const pushNotificationsController = {
         // when send notification to the doctor ,send token to access the data later
         try{
             let message = {
-                Notification : {
+                notification : {
                     title: "You get access from user $address of user",
                     body: "test"
                 },

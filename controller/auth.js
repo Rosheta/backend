@@ -93,7 +93,7 @@ const authController = {
   },
   login: async (req, res) => {
     try {
-      const { email, password, fcmToekn } = req.body;
+      const { email, password, devicetoekn } = req.body;
 
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
@@ -122,7 +122,7 @@ const authController = {
       // add the username and the token to the firebase database
       const newUserToekn = new Firebase({ 
         username: user.username,
-        toekn: fcmToekn
+        token: devicetoekn
       });
 
       await newUserToekn.save();
