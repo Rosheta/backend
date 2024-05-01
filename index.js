@@ -1,35 +1,45 @@
-// const patientRouter = require('./routers/patientRouters.js');
-// const doctorRouter = require('./routers/doctorRouters.js');
+const patientRouter = require('./routers/patientRouters.js');
+const doctorRouter = require('./routers/doctorRouters.js');
+const labRouter = require('./routers/labRouters.js');
 const userRouter = require('./routers/userRouters.js');
+const hlfRouter = require('./routers/hlfRouters.js');
+const ipfsRouter = require('./routers/ipfsRouters.js');
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const Patient = require('./models/patient');
-const authController = require('./controller/auth');
-const profileController = require('./controller/profile');
 const chatsController = require('./controller/chats');
 const searchController = require('./controller/search');
 
-const db = require('./db/mongo')
+//const db = require('./db/mongo')
+
 const dotenv = require('dotenv');
 const http = require('http');
 const socketIo = require('socket.io');
+
 
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
 const io = socketIo(server)
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('lol Rosheta!');
+  res.send(' Rosheta!');
 });
 
+
 app.use('/', userRouter);
+app.use('/patient', patientRouter);
+app.use('/doctor', doctorRouter);
+app.use('/lab', labRouter);
+app.use('/hlf', hlfRouter);
+app.use('/ipfs', ipfsRouter);
+
 
 io.on('connection', (socket) => {
   console.log('A user connected');

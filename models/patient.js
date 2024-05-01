@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { isEmail, isLength, isNumeric } = require('validator')
+const bcrypt = require('bcryptjs');
+const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator')
 
 const patientSchema = new mongoose.Schema({
   name: {
@@ -45,9 +46,9 @@ const patientSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "you must enter a password"],
-    
+    validate: [isStrongPassword, 'not strong enough password'],
   },
-  d_o_b:{
+  birthdate:{
     value: {
       type: [Date, "not a valid date type"],
       required: [true, "you must enter your birth date"]
@@ -60,12 +61,31 @@ const patientSchema = new mongoose.Schema({
   gender: {
     type: String,
     enum: ['m', 'f'],
-    // required: [true, "you must enter your gender"]
+    required: [true, "you must enter your gender"]
   },
   profile_picture: {
     type: String,
     default: null
+  },
+  username: {
+    type: String,
+    unique: [true, "username is already used"],
   }
+});
+// hash password and add username before saving
+patientSchema.pre('save', async function(next) {
+  this.password = await bcrypt.hash(this.password, 10);
+
+  this.username = this.email.value.split('@')[0];
+  let usernameExists = await this.constructor.findOne({ username: this.username });
+
+  let nonce = 1;
+  while (usernameExists) {
+    this.username = `${this.username}_${nonce}`;
+    nonce++;
+    usernameExists = await this.constructor.findOne({ username: this.username });
+  }
+  next();
 });
 
 const Patient = mongoose.model('Patient', patientSchema);
