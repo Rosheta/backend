@@ -27,14 +27,6 @@ function uuid() {
     });
 }
 
-
-// Initialize Firebase Admin SDK
-// const serviceAccount = require('path/to/serviceAccountKey.json'); // Path to your Firebase service account key JSON file
-// const certPath = admin.credential.cert(serviceAccount);
-// const serverKey = "AAAAEjAVTVE:APA91bFUpaOW9NVZiylOffc2g8uj-ikP1WlTRcinhLplIH1cgQeWp_7wrdpKQ9hymnD6MSDi-IpXzFaY_pLqqiQRITOnVYrt1Qq1XvFbxYJ_YIqhoaDtc-i4u8BvRHpyvc5FRgICKhxE"
-// var fcm = new FCM(serverKey);
-
-
 const pushNotificationsController = {
      // generateToken: async (req, res) => {
     //     console.log(req.query.userId);
@@ -56,7 +48,9 @@ const pushNotificationsController = {
 
 
     giveAccess : async (req,res) => {
-        let doctorToekn = await Firebase.find({username : req.body.username});
+        let doctorTokenDoc = await Firebase.find({username : req.body.username});
+        if(!doctorTokenDoc) return res.status(400).json({msg : "This username doesn't exist"});
+        doctorToken = doctorTokenDoc.token;
 
         let userId = req.user;
         let user = await Patient.findById(userId);
@@ -74,7 +68,7 @@ const pushNotificationsController = {
                     orderId: "123456",
                     orderDate: "2024-4-30"
                 },
-                token: doctorToekn
+                token: doctorToken
 
             };
             admin.messaging().send(message).then((response) => {
@@ -82,7 +76,7 @@ const pushNotificationsController = {
                 return res.status(200).json({msg : "Notification Sent"});
             })
             .catch((err) => {
-                console.log("There is something wrong!");
+                console.log("There is something wrong! ", err);
                 return res.status(400).json({err});
             });
         }   
