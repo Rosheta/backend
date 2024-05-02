@@ -18,5 +18,6 @@ router.post('/ch/upd', hlfController.post.updateMedicalRecord);
 
 // Route for DELETE request
 router.delete('/ch/rec', hlfController.delete.DeleteMedicalRecord);
+// Route for PU
 
 module.exports = router;
