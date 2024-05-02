@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-// const FCM = require('fcm-node');
 const jwt = require('jsonwebtoken');
 const Patient = require('../models/patient');
 const Firebase = require('../models/firebase');
