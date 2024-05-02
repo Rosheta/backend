@@ -16,6 +16,6 @@ router.get('/show', authMiddleware.authenticate, fileController.showFile);
 
 // Route for send notifications to doctor
 router.post('/giveAccess' , pushNotificationsController.giveAccess);
-// router.get('/giveAccess' , authMiddleware.authenticate , remoteAccessController.generateToken);
+// router.post('/giveAccess' , authMiddleware.authenticate , remoteAccessController.generateToken);
 
 module.exports = router;
