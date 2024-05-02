@@ -93,7 +93,7 @@ const authController = {
   },
   login: async (req, res) => {
     try {
-      const { email, password, devicetoekn } = req.body;
+      const { email, password, devicetoken } = req.body;
 
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
@@ -124,13 +124,13 @@ const authController = {
 
       if (existingUser) {
           // Username already exists, update the token
-          existingUser.token = deviceToken;
+          existingUser.token = devicetoken;
           await existingUser.save();
       } else {
           // Username doesn't exist, create a new entry
           const newUserToken = new Firebase({
               username: user.username,
-              token: deviceToken
+              token: devicetoken
           });
           await newUserToken.save();
       }

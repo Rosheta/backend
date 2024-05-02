@@ -27,30 +27,24 @@ function uuid() {
     });
 }
 
+function generateToken(patientUsername,dcotorUsername){
+    const payload = {
+        patientUsername: patientUsername,
+        dcotorUsername : dcotorUsername,
+        uniqueId: uuid(), // Add a unique identifier to the payload
+    };
+
+    // Generate JWT token
+    const token = jwt.sign(payload, JWT_REMOTE_ACCESS_SECRET, { expiresIn:  JWT_REMOTE_ACCESS_EXPIRE});
+    return token;
+}
+
 const pushNotificationsController = {
-     // generateToken: async (req, res) => {
-    //     console.log(req.query.userId);
-    //     // let user = await Patient.findById(req.query.userId);
-    //     // console.log(user);
-
-    //     const payload = {
-    //     userId: req.userId,
-    //     uniqueId: uuid(), // Add a unique identifier to the payload
-    //     };
-        
-    //     console.log(JWT_REMOTE_ACCESS_SECRET);
-
-    //     // Generate JWT token
-    //     const token = jwt.sign(payload, JWT_REMOTE_ACCESS_SECRET, { expiresIn:  JWT_REMOTE_ACCESS_EXPIRE});
-
-    //     res.status(200).json(token);
-    // }
-
-
     giveAccess : async (req,res) => {
-        let doctorTokenDoc = await Firebase.find({username : req.body.username});
+        const { username } = req.body;
+        let doctorTokenDoc = await Firebase.find({username : username});
         if(!doctorTokenDoc) return res.status(400).json({msg : "This username doesn't exist"});
-        doctorToken = doctorTokenDoc.token;
+        let doctorToken = doctorTokenDoc.token;
 
         let userId = req.user;
         let user = await Patient.findById(userId);
@@ -65,8 +59,7 @@ const pushNotificationsController = {
                     body: "test"
                 },
                 data:{ // here where to send the patient data 
-                    orderId: "123456",
-                    orderDate: "2024-4-30"
+                    dataAccessToken : generateToken(user.username,username),
                 },
                 token: doctorToken
 
