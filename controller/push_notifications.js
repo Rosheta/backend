@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const Patient = require('../models/patient');
 const Firebase = require('../models/firebase');
+const File = require('../models/file');
 var admin = require("firebase-admin");
 
 dotenv.config();
@@ -41,14 +42,26 @@ function generateToken(patientUsername,dcotorUsername){
 const pushNotificationsController = {
     giveAccess : async (req,res) => {
         const { username } = req.body;
+
+        // check for the input username if it is already exist
         let doctorTokenDoc = await Firebase.find({username : username});
         if(!doctorTokenDoc) return res.status(400).json({msg : "This username doesn't exist"});
         let doctorToken = doctorTokenDoc.token;
 
         let userId = req.user;
         let user = await Patient.findById(userId);
+        const patientUsername = user.username;
+
+        // get the files of the patient to send it to the doctor
+        const userFiles = await File.find({ patientUsername });
+
+        const filesList = userFiles.map(file => ({
+            Filename: file.fileName,
+            Extension: file.extension,
+            Hash: file.hash,
+            date: file.timestamp 
+        }));
         // console.log(user.username);
-        // get the data of the patient who sends this request and send notification to the token of the doctor
 
         // when send notification to the doctor ,send token to access the data later
         try{
@@ -58,7 +71,8 @@ const pushNotificationsController = {
                     body: "test"
                 },
                 data:{ // here where to send the patient data 
-                    dataAccessToken : generateToken(user.username,username),
+                    dataAccessToken : generateToken(patientUsername,username),
+                    files : filesList,
                 },
                 token: doctorToken
 
