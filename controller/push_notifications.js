@@ -52,17 +52,6 @@ const pushNotificationsController = {
         let user = await Patient.findById(userId);
         const patientUsername = user.username;
 
-        // get the files of the patient to send it to the doctor
-        const userFiles = await File.find({ patientUsername });
-
-        const filesList = userFiles.map(file => ({
-            Filename: file.fileName,
-            Extension: file.extension,
-            Hash: file.hash,
-            date: file.timestamp 
-        }));
-        // console.log(user.username);
-
         // when send notification to the doctor ,send token to access the data later
         try{
             let message = {
@@ -72,7 +61,6 @@ const pushNotificationsController = {
                 },
                 data:{ // here where to send the patient data 
                     dataAccessToken : generateToken(patientUsername,username),
-                    // files : filesList,
                 },
                 token: doctorToken
 

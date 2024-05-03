@@ -50,7 +50,7 @@ const remoteAccessController = {
             date: file.timestamp 
         }));
 
-        res.status(200).json(filesList);
+        res.status(200).json({ files: filesList });
     },
     getFile : async (req,res) => {
         const token = req.query.token;
