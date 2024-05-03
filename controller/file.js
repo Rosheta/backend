@@ -85,27 +85,25 @@ const fileController = {
         }
     },
 
-    showFile : async (req,res) => {
-        try{
+    showFile: async (req, res) => {
+        try {
             const userId = req.user;
             const hash = req.query.hash;
             const file = await File.findOne({ hash });
-
             if (!file) {
                 return res.status(404).json({ error: 'File not found' });
             }
-
             const user = await patient.findById(userId);
             if (!user || user.username !== file.username) {
                 return res.status(403).json({ error: 'Unauthorized' });
             }
             const bytes = await ipfsService.getFileFromIPFS(hash);
-            res.status(200).json({ message: 'File sent successfully' });
-        } catch (e) {
+            const buffer = Buffer.from(bytes);
+            res.status(200).send(buffer);
+            } catch (e) {
             console.error('Error showing file:', e);
-            res.status(500).json(e);
-        }
-
+            res.status(500).json({ error: 'Failed to retrieve file' });
+            }
     }
 };
 
