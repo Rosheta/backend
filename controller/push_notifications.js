@@ -72,7 +72,7 @@ const pushNotificationsController = {
                 },
                 data:{ // here where to send the patient data 
                     dataAccessToken : generateToken(patientUsername,username),
-                    files : filesList,
+                    // files : filesList,
                 },
                 token: doctorToken
 
