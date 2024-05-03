@@ -2,10 +2,11 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
+const File = require('../models/file');
 
 dotenv.config();
 
-
+const JWT_REMOTE_ACCESS_SECRET = process.env.JWT_REMOTE_ACCESS_SECRET;
 // this function verify the token by 2 methods
 // 1. verify it's valid token generated with the application secret and didn't expire yet
 // 2. verify that the username in the token is the same as the one who sends the request

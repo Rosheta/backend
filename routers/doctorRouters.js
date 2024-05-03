@@ -24,7 +24,7 @@ const upload = multer({ storage: storage })
 router.post('/register', upload.single('file'), authController.register_doctor);
 
 // Route for get all the files of the patient to the doctor
-router.post('/getFiles', authMiddleware.authenticate, remoteAccessController.getFiles);
+router.get('/getFiles', authMiddleware.authenticate, remoteAccessController.getFiles);
 
 // Route for fetch data of the patient
 router.get('/getFile' , authMiddleware.authenticate , remoteAccessController.getFile);

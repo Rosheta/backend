@@ -27,10 +27,10 @@ function uuid() {
     });
 }
 
-function generateToken(patientUsername,dcotorUsername){
+function generateToken(patientUsername,doctorUsername){
     const payload = {
         patientUsername: patientUsername,
-        dcotorUsername : dcotorUsername,
+        doctorUsername : doctorUsername,
         uniqueId: uuid(), // Add a unique identifier to the payload
     };
 
