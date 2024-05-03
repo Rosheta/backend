@@ -78,8 +78,8 @@ const remoteAccessController = {
                 return res.status(403).json({ error: 'Unauthorized' });
             }
             const bytes = await ipfsService.getFileFromIPFS(hash);
-            res.status(200).json(bytes);
-
+            const buffer = Buffer.from(bytes);
+            res.status(200).send(buffer);
         } catch (error) {
             console.error(error);
             return res.status(401).json({ message: 'Invalid token' });
