@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
   res.send(' Rosheta!');
 });
 
+app.use('/images',express.static(__dirname + '/images'));
 
 app.use('/', userRouter);
 app.use('/patient', patientRouter);

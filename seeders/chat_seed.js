@@ -27,7 +27,7 @@ async function main() {
     
     let pairs = new Set();
 
-    while (pairs.size <= num_records) { // Loop until desired number of records is achieved
+    while (pairs.size < num_records) { // Loop until desired number of records is achieved
         try {
             let index1 = Math.floor(Math.random() * patients_ids.length);
             let index2 = Math.floor(Math.random() * doctors_ids.length);   

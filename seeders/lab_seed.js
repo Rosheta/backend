@@ -38,11 +38,11 @@ async function main() {
                 government: faker.helpers.arrayElement(governments),
                 license: "labs_licenses/momo-1713475764210.pdf"
             });
+            await lab.save();
             writeFile('./seeders/labs.txt', `${lab._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
                 if (err)
                     console.log(err);
             });
-            await lab.save();
         }
         catch (error) {
             console.log(error)

@@ -23,7 +23,7 @@ const authController = {
         password: password, 
         name: name,
         phone_number: { value: phone }, 
-        ssn: { value: ssn },
+        ssn: ssn,
         birthdate: { value: birthdate },
         gender: gender
       });
@@ -48,7 +48,7 @@ const authController = {
         password: password, 
         name: name,
         phone_number: { value: phone }, 
-        ssn: { value: ssn },
+        ssn: ssn,
         birthdate: { value: birthdate },
         gender: gender,
         location : location,

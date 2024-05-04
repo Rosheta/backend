@@ -28,10 +28,7 @@ async function main() {
                     value: phone_number,
                     visible: true
                 },
-                ssn: {
-                    value: ssn,
-                    visible: true
-                },
+                ssn: ssn,
                 email: {
                     value: email,
                     visible: true
@@ -44,11 +41,12 @@ async function main() {
                 gender: faker.helpers.arrayElement(['m', 'f']),
                 profile_picture: faker.image.avatar()
             });
-            writeFile('./seeders/patients.txt', `${patient._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
+            await patient.save();
+            const line = `${patient._id} ---> ${email} ---> ${password}`;
+            writeFile('./seeders/patients.txt', i<num_records-1 ? `${line}\n` : line, { flag: 'a' }, (err) => {
                 if (err)
                     console.log(err);
             });
-            await patient.save();
         }
         catch (error) {
             console.log(error)
