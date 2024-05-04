@@ -4,7 +4,7 @@ const router = express.Router();
 const ipfsService = require('../HLF/ipfsService');
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // Specify the destination directory for file uploads
+const upload = multer(); // Specify the destination directory for file uploads
 
 router.post('/upload', upload.single('file'), async (req, res) => {
   const file = req.file; // Now, req.file contains the uploaded file information
@@ -24,7 +24,7 @@ router.get('/all', async (req, res) => {
   res.send(data);
  
 });
-router.get('/delete', async (req, res) => {
+router.delete('/delete', async (req, res) => {
   const hash = req.query.hash;
   const data = await ipfsService.deleteFileFromIPFS(hash);
   res.send(data);

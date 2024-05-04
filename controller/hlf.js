@@ -11,6 +11,24 @@ const hlfController = {
         res.status(500).send({ error: 'Internal Server Error' });
       }
     },
+    getMedicalRecord: async (req, res) => {
+      try {
+        const id = req.query.id;
+        const data = await hlf.ReadMedicalRecord(id);
+        res.send(data);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
+    getAllCronicalDiseases: async (req, res) => {
+      try {
+        const PatientId = req.query.id;
+        const data = await hlf.getChronicDieases(PatientId);
+        res.send(data);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
     getFileFromIPFS: async (req, res) => {
       try {
         const hash = req.query.hash;
@@ -32,8 +50,17 @@ const hlfController = {
   post: {
     createMedicalRecord: async (req, res) => {
       try {
-        const { id, patientName, dob, diagnosis, medications, allergies, doctor } = req.body;
-        const data = await hlf.CreateMedicalRecord(id, patientName, dob, diagnosis, medications, allergies, doctor);
+        
+        
+        const data = await hlf.CreateMedicalRecord(req.body);
+        res.send(data);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
+    updateMedicalRecord: async (req, res) => {
+      try {
+        const data = await hlf.UpdateMedicalRecord(req.body);
         res.send(data);
       } catch (error) {
         res.status(500).send({ error: 'Internal Server Error' });
@@ -50,6 +77,15 @@ const hlfController = {
     }
   },
   delete: {
+    DeleteMedicalRecord: async (req, res) => {
+      try {
+        const id = req.query.id;
+        const data = await hlf.DeleteMedicalRecord(id);
+        res.send(data);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
     deleteFileFromIPFS: async (req, res) => {
       try {
         const hash = req.query.hash;
