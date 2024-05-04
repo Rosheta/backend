@@ -19,7 +19,7 @@ function ValidateToken(token,requestedUsername){
         // verify the username in the token is the same as the requested one
         if(requestedUsername !== doctorUsername) return 3;
 
-        return {patientUsername, doctorUsername};
+        return {patientUsername};
 
     } catch (error) {
         console.error(error);
@@ -28,7 +28,7 @@ function ValidateToken(token,requestedUsername){
 }
 
 const remoteAccessController = {
-    getFiles : async (req,res) => {
+    getAllPatientData : async (req,res) => {
         const token = req.query.token;
 
         let userId = req.user;
@@ -56,36 +56,33 @@ const remoteAccessController = {
         const token = req.query.token;
         const fileHash = req.query.fileHash;
 
-        // verify the token itself
-        try {
-            // Verify the token
-            const decoded = jwt.verify(token, JWT_REMOTE_ACCESS_SECRET);
-            const { patientUsername, doctorUsername, uniqueId } = decoded;
+        let userId = req.user;
+        let user = await Doctor.findById(userId);
 
-            // verify the username in the token is the same as the requested one
-            let userId = req.user;
-            let user = await Doctor.findById(userId);
-            if(user.username !== doctorUsername) return res.status(401).json({ message: 'You do not have access to this file' });
+        // verify the token
+        let validation = ValidateToken(token,user.username);
+        if(validation === 2) return res.status(401).json({ message: 'Invalid token' });
+        if(validation === 3) return res.status(401).json({ message: 'You do not have access to this file' });
 
+        // get the file by its hash
+        patientUsername = validation.patientUsername;
+        const file = await File.findOne({ fileHash });
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        }
 
-            // next, get the file from the patient files and return it
-            const file = await File.findOne({ fileHash });
-
-            if (!file) {
-                return res.status(404).json({ error: 'File not found' });
-            }
-
-            if (patientUsername !== file.username) {
-                return res.status(403).json({ error: 'Unauthorized' });
-            }
-            const bytes = await ipfsService.getFileFromIPFS(hash);
+        if (patientUsername !== file.username) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+        try{
+            const bytes = await ipfsService.getFileFromIPFS(fileHash);
             const buffer = Buffer.from(bytes);
             res.status(200).send(buffer);
-        } catch (error) {
-            console.error(error);
-            return res.status(401).json({ message: 'Invalid token' });
         }
-        
+        catch (e) {
+            console.error('Error getting files:', e);
+            res.status(500).json(e);
+        }       
     }
 };
 
