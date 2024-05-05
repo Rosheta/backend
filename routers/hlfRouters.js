@@ -25,6 +25,5 @@ router.post('/ch/ep', hlfController.post.enrollPatient);
 
 // Route for DELETE request
 router.delete('/ch/rec', hlfController.delete.DeleteMedicalRecord);
-// Route for PU
-
+router.delete('/ch/all', hlfController.delete.DeleteAllMedicalRecords);
 module.exports = router;

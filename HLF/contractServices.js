@@ -219,6 +219,26 @@ async function getChronicDieases(PatientId,signer) {
 
     }
 }
+// delete all medical records from the blockchain service
+async function DeleteAllMedicalRecords(signer) {
+    try {
+        const response = await axios.post(`${kaleidoPatUrl}/transactions`, {
+            "headers":{
+                "type": "SendTransaction",
+                "signer": signer,
+                "channel": CHANNEL,
+                "chaincode": CHAINCODE
+            },
+            "func": "DeleteAllMedicalRecords",
+            "args": []
+        }, { headers });
+        return response.data;
+    } catch (error) {
+        console.error('Error:', error);
+        return error ;
+
+    }
+}
 // export the functions
 module.exports = {
     getAllMedicalRecords,
@@ -231,7 +251,8 @@ module.exports = {
     EnrollPatient,
     EnrollDoctor,
     getAllUsers,
-    getAllAppointments
+    getAllAppointments,
+    DeleteAllMedicalRecords
     
     
 };

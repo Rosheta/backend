@@ -160,6 +160,15 @@ const hlfController = {
         res.status(500).send({ error: 'Internal Server Error' });
       }
     },
+    DeleteAllMedicalRecords: async (req, res) => {
+      try {
+        const signer = req.query.signer;
+        const data = await hlf.DeleteAllMedicalRecords(signer);
+        res.send(data);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal Server Error' });
+      }
+    },
     deleteFileFromIPFS: async (req, res) => {
       try {
         const hash = req.query.hash;
