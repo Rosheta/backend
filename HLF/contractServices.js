@@ -161,6 +161,8 @@ async function CreateMedicalRecord(appoiment,signer) {
 // update a medical record in the blockchain service
 async function UpdateMedicalRecord(appoiment,signer) {
     console.log('UpdateMedicalRecord', appoiment);
+    
+ const { Name,  PatientId,  Date,  Prescription,  Notes,  ChronicDiseases,  DoctorId} = appoiment;
 
     try {
         const response = await axios.post(`${kaleidoPatUrl}/transactions`, {
@@ -171,7 +173,7 @@ async function UpdateMedicalRecord(appoiment,signer) {
                 "chaincode": CHAINCODE
             },
             "func": "UpdateMedicalRecord",
-            "args": [JSON.stringify(appoiment)]
+            "args": [Name,  PatientId,  Date,  Prescription,  Notes,  JSON.stringify(ChronicDiseases),  DoctorId]
         }, { headers });
         return response.data;
     } catch (error) {
