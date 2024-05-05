@@ -4,7 +4,6 @@ const labRouter = require('./routers/labRouters.js');
 const userRouter = require('./routers/userRouters.js');
 const hlfRouter = require('./routers/hlfRouters.js');
 const ipfsRouter = require('./routers/ipfsRouters.js');
-const testHlf = require('./HLF/contractServices');
 
 const express = require('express');
 const bodyParser = require('body-parser');

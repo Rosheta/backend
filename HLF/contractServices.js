@@ -1,50 +1,33 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
+const { json } = require('express');
 dotenv.config();
 
-/** SPYDRA API :
-const networkUrl =  'https://663148880e933e1efc2999ec.spydra.app/fabric/66314c0d510df7de2be05b28/ledger/transact';
-const apiKey =  '1tz2jAPfLq47GxthTJ4E61RJRGAdwFy31URSmEzZ';
-const headers = {
-    'accept': 'application/json',
-    'X-API-KEY': apiKey,
-    'Content-Type': 'application/json'
-};
-*/
 const kaleidoPatUrl = 'https://e0jwan9vu1-e0jkm3wg5z-connect.de0-aws-ws.kaleido.io';
 const kaleidoDocUrl = 'https://e0jwan9vu1-e0zkhqbo7r-connect.de0-aws-ws.kaleido.io'; 
 const headers = {
     'accept': '*/*',
     'Authorization' :'Basic ZTBqcnhhMW0zeDpEdWVKOFRod3VCbUhEMV9wekFYYklhUmVGSFpHTEZxcG1GVnlJYUR2TV9F',
-    'Content-Type': 'application/json'
+    'Content-Type': '*/*'
 };
 
 CHAINCODE = "medo"
 CHANNEL = "family"
 // register a new patient in the blockchain service
-async function RegisterPatient(patient) {
+async function RegisterUser(user) {
     try {
         const response = await axios.post(`${kaleidoPatUrl}/identities`, {
-            "name":patient,
+            "name":user,
             "type" :"client"
         }, { headers });
         return response.data;
     } catch (error) {
+
         console.error('Error:', error);
+        return error ;
     }
 }
-// register a new doctor in the blockchain service
-async function RegisterDoctor(doctor) {
-    try {
-        const response = await axios.post(`${kaleidoDocUrl}/identities`, {
-            "name":doctor,
-            "type" :"client"
-        }, { headers });
-        return response.data;
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
+
 // enroll a  patient in the blockchain service
 async function EnrollPatient(patient,pass) {
     try {
@@ -54,6 +37,8 @@ async function EnrollPatient(patient,pass) {
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 // enroll a  doctor in the blockchain service
@@ -66,26 +51,22 @@ async function EnrollDoctor(doctor,pass) {
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 // get all patients from the blockchain service
-async function getAllPatients() {
+async function getAllUsers() {
     try {
         const response = await axios.get(`${kaleidoPatUrl}/identities`,  { headers });
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
-// get all doctors from the blockchain service
-async function getAllDoctors() {
-    try {
-        const response = await axios.get(`${kaleidoDocUrl}/identities`, { headers });
-        return response.data;
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
+
 
 // get all medical records from the blockchain service
 async function getAllMedicalRecords(signer) {
@@ -100,9 +81,11 @@ async function getAllMedicalRecords(signer) {
             "args": [],
             "strongread": true
         }, { headers });
-        return response.data;
+        return response.data.result;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 
@@ -120,9 +103,11 @@ async function ReadMedicalRecord(recordId,signer) {
             "args": [recordId]
 
         }, { headers });
-        return response.data;
+        return response.data.result;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 
@@ -143,14 +128,15 @@ async function DeleteMedicalRecord(recordId,signer) {
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 
 
 // add a medical record to the blockchain service
 async function CreateMedicalRecord(appoiment,signer) {
-      const {Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId} = appoiment;
-      console.log('CreateMedicalRecord', Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId);
+      console.log('CreateMedicalRecord', appoiment);
 
     try {
         const response = await axios.post(`${kaleidoPatUrl}/transactions`, {
@@ -162,7 +148,7 @@ async function CreateMedicalRecord(appoiment,signer) {
 
             },
             "func": "CreateMedicalRecord",
-            "args": [Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId],
+            "args": [JSON.stringify(appoiment)],
             "init": false
         }, { headers });
         return response.data;
@@ -174,7 +160,7 @@ async function CreateMedicalRecord(appoiment,signer) {
 
 // update a medical record in the blockchain service
 async function UpdateMedicalRecord(appoiment,signer) {
-    const {Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId} = appoiment;
+    console.log('UpdateMedicalRecord', appoiment);
 
     try {
         const response = await axios.post(`${kaleidoPatUrl}/transactions`, {
@@ -185,11 +171,32 @@ async function UpdateMedicalRecord(appoiment,signer) {
                 "chaincode": CHAINCODE
             },
             "func": "UpdateMedicalRecord",
-            "args": [Name, PatientId, Date, Prescription, Notes, ChronicDiseases, DoctorId]
+            "args": [JSON.stringify(appoiment)]
         }, { headers });
         return response.data;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
+    }
+}
+// get all appointments from the blockchain service for patient
+async function getAllAppointments(PatientId,signer) {
+    try {
+        const response = await axios.post(`${kaleidoPatUrl}/query`, {
+            "headers":{
+                "signer": signer,
+                "channel": CHANNEL,
+                "chaincode": CHAINCODE
+            },
+            "func": "GetAllMedicalRecordsForOnePatient",
+            "args": [PatientId]
+        }, { headers });
+        return response.data.result;
+    } catch (error) {
+        console.error('Error:', error);
+        return error ;
+
     }
 }
 
@@ -205,9 +212,11 @@ async function getChronicDieases(PatientId,signer) {
             "func": "GetAllChronicDiseasesForOnePatient",
             "args": [PatientId]
         }, { headers });
-        return response.data;
+        return response.data.result;
     } catch (error) {
         console.error('Error:', error);
+        return error ;
+
     }
 }
 // export the functions
@@ -218,11 +227,11 @@ module.exports = {
     CreateMedicalRecord,
     UpdateMedicalRecord,
     getChronicDieases,
-    RegisterPatient,
-    RegisterDoctor,
+    RegisterUser,
     EnrollPatient,
     EnrollDoctor,
-    getAllPatients,
-    getAllDoctors
+    getAllUsers,
+    getAllAppointments
+    
     
 };
