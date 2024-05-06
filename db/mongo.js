@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const URI = process.env.NODE_ENV === "production"? process.env.URI : process.env.URI_DEV;
-
+// const URI = process.env.NODE_ENV === "production"? process.env.URI : process.env.URI_DEV;
+const URI = process.env.URI;
 mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

@@ -4,7 +4,7 @@ const labRouter = require('./routers/labRouters.js');
 const userRouter = require('./routers/userRouters.js');
 const hlfRouter = require('./routers/hlfRouters.js');
 const ipfsRouter = require('./routers/ipfsRouters.js');
-
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -21,6 +21,7 @@ const socketIo = require('socket.io');
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
+app.use(cors());
 
 const io = socketIo(server)
 const PORT = process.env.PORT || 3000;
