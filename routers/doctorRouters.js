@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require('../controller/auth');
 const path = require('path');
 const authMiddleware = require('../middleware/auth');
+const accessControlMiddleware = require('../middleware/access');
 const remoteAccessController = require('../controller/remoteAccess');
 
 const multer = require('multer');
@@ -20,13 +21,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// Route for registering a new doctor
-router.post('/register', upload.single('file'), authController.register_doctor);
-
-// Route for get all the files of the patient to the doctor
-router.get('/getAllPatientData', authMiddleware.authenticate, remoteAccessController.getAllPatientData);
-
-// Route for fetch data of the patient
+// get routers
+router.get('/getAllPatientData',
+  authMiddleware.authenticate,
+  accessControlMiddleware.accessControl,
+  remoteAccessController.getAllPatientData
+);
 router.get('/getFile' , authMiddleware.authenticate , remoteAccessController.getFile);
+
+// post routers
+router.post('/appointment',
+  authMiddleware.authenticate,
+  accessControlMiddleware.accessControl,
+  remoteAccessController.addAppointment
+);
+router.post('/register', upload.single('file'), authController.register_doctor);
 
 module.exports = router;

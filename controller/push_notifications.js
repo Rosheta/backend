@@ -44,7 +44,7 @@ const pushNotificationsController = {
         const { username } = req.body;
 
         // check for the input username if it is already exist
-        let doctorTokenDoc = await Firebase.find({username : username});
+        let doctorTokenDoc = await Firebase.findOne({username : username});
         if(!doctorTokenDoc) return res.status(400).json({msg : "This username doesn't exist"});
         let doctorToken = doctorTokenDoc.token;
 
@@ -65,6 +65,7 @@ const pushNotificationsController = {
                 token: doctorToken
 
             };
+            console.log(message);
             admin.messaging().send(message).then((response) => {
                 console.log("notification sent!",response);
                 return res.status(200).json({msg : "Notification Sent"});
