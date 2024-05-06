@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const {governments, departments} = require('../utils/constants')
 const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator')
+const HLF = require('../HLF/contractServices');
 
 const doctorSchema = new mongoose.Schema({
   name: {
@@ -93,6 +94,10 @@ const doctorSchema = new mongoose.Schema({
       },
       message: props => `${props.value} is not a valid government`
     }
+  },
+  blockchain_pass: {
+    type: String,
+    default: ""
   }
 });
 
@@ -109,6 +114,8 @@ doctorSchema.pre('save', async function(next) {
     nonce++;
     usernameExists = await this.constructor.findOne({ username: this.username });
   }
+  const data = await HLF.RegisterUser(this.username);
+  this.blockchain_pass = data.secret;
   next();
 });
 

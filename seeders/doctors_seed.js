@@ -19,6 +19,7 @@ async function main() {
     for (let i = 0; i < num_records; i++) {
         const phone_number = faker.number.int({ min: 10000000000, max: 99999999999 }).toString();
         const ssn = faker.number.int({ min: 10000000000000, max: 99999999999999 }).toString();
+        console.log(ssn);
         const email = faker.internet.email();
         const password = faker.internet.password({length: 15, prefix: "Ul@1"});
         try {
@@ -43,7 +44,7 @@ async function main() {
                 location: "sedi beshr",
                 government: faker.helpers.arrayElement(["Alexandria", "Cairo"]),
                 department: faker.helpers.arrayElement(["Neurology", "Otology"]),
-                license: "enta zay el fol",
+                license: "doctors_licenses/toto_lolo-1714974116139.pdf",
             });
             await doctor.save();
             const line = `${doctor._id} ---> ${email} ---> ${password}`;

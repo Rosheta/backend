@@ -8,6 +8,7 @@ const Lab = require('../models/lab');
 const Firebase = require('../models/firebase');
 
 const handleErrors = require('../utils/errorHandler')
+const hlf = require('../HLF/contractServices');
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -118,7 +119,15 @@ const authController = {
       }
 
       const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
-
+      
+      if(type == 'd'){
+        const data = await hlf.EnrollDoctor(user.username, user.blockchain_pass); 
+        console.log(data);
+      }
+      else if(type == 'p'){
+        const data = await hlf.EnrollPatient(user.username, user.blockchain_pass); 
+        console.log(data);
+      }
       // Check if the username already exists in the database
       const existingUser = await Firebase.findOne({ username: user.username });
 

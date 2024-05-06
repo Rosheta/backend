@@ -3,13 +3,12 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// const URI = process.env.NODE_ENV === "production"? process.env.URI : process.env.URI_DEV;
-const URI = process.env.URI;
+const URI = process.env.NODE_ENV === "production"? process.env.URI : process.env.URI_DEV;
 
 mongoose.connect(URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: 'Rosheta'
+  dbName: 'rosheta'
 })
 .catch((err) => {
   console.log("Mongoose Error: " + err);

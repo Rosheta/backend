@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator')
+const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator');
+const { type } = require('os');
+const HLF = require('../HLF/contractServices');
 
 const patientSchema = new mongoose.Schema({
   name: {
@@ -64,6 +66,9 @@ const patientSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: [true, "username is already used"],
+  },
+  blockchain_pass: {
+    type: String,
   }
 });
 // hash password and add username before saving
@@ -79,6 +84,8 @@ patientSchema.pre('save', async function(next) {
     nonce++;
     usernameExists = await this.constructor.findOne({ username: this.username });
   }
+  const data = await HLF.RegisterUser(this.username);
+  this.blockchain_pass = data.secret;
   next();
 });
 
