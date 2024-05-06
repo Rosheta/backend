@@ -7,9 +7,9 @@ const hlfController= controller
 // Routes for GET requests
 router.get('/ch/all', hlfController.get.getAllMedicalRecords);
 router.get('/ch/rec', hlfController.get.getMedicalRecord);
-router.get('/ch/cd', hlfController.get.getAllCronicalDiseases);
+// router.get('/ch/cd', hlfController.get.getAllCronicalDiseases);
 router.get('/ch/users', hlfController.get.getAllUsers);
-router.get('/ch/ap', hlfController.get.getAllAppointments);
+// router.get('/ch/ap', hlfController.get.getAllAppointments);
 router.get('/ch/data', hlfController.get.getAllData);
 
 
