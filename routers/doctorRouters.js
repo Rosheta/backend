@@ -21,12 +21,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// get routers
-router.get('/getAllPatientData',
-  authMiddleware.authenticate,
-  accessControlMiddleware.accessControl,
-  remoteAccessController.getAllPatientData
-);
 router.get('/getFile' , authMiddleware.authenticate , remoteAccessController.getFile);
 
 // post routers
