@@ -23,6 +23,12 @@ const upload = multer({ storage: storage })
 
 router.get('/getFile' , authMiddleware.authenticate , remoteAccessController.getFile);
 
+router.get('/patient/data',
+  authMiddleware.authenticate,
+  accessControlMiddleware.accessControl,
+  remoteAccessController.getAllPatientData
+);
+
 // post routers
 router.post('/appointment',
   authMiddleware.authenticate,
