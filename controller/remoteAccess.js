@@ -1,7 +1,6 @@
 const File = require('../models/file');
 const hlf = require('../HLF/contractServices');
 const Doctor = require('../models/doctor');
-const Patient = require('../models/patient');
 
 const remoteAccessController = {
     getAllPatientData : async (req,res) => {
@@ -17,7 +16,17 @@ const remoteAccessController = {
             date: file.timestamp 
         }));
 
-        res.status(200).json({ files: filesList });
+        const PatientId = req.patientUsername;
+        const signer = req.patientUsername;
+        
+        const appointments_data = await hlf.getAllAppointments(PatientId, signer);
+        const chronics_data = await hlf.getChronicDieases(PatientId, signer);
+
+        res.status(200).json({
+            files: filesList,
+            appointments: appointments_data,
+            chronics: chronics_data
+        });
     },
     getFile: async (req, res) => {
         const patientUsername = req.patientUsername
@@ -52,7 +61,7 @@ const remoteAccessController = {
                 "ChronicDiseases": chronics,
                 "Date": new Date(),
                 "DoctorId": req.doctorUsername,
-                "Name": doctor.name,
+                "Name": `${doctor.username}_${req.patientUsername}_${Date.now()}`,
                 "Notes": notes,
                 "PatientId": req.patientUsername,
                 "Prescription": prescription,
