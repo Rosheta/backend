@@ -7,6 +7,7 @@ const remoteAccessController = require('../controller/remoteAccess');
 
 const authMiddleware = require('../middleware/auth');
 const accessControlMiddleware = require('../middleware/access');
+const blockchainMiddleware = require('../middleware/blockchain');
 
 const pushNotificationsController = require('../controller/push_notifications');
 
@@ -17,19 +18,13 @@ router.post('/giveAccess' , authMiddleware.authenticate , pushNotificationsContr
 router.get('/getFiles', authMiddleware.authenticate,fileController.getUserFiles);
 router.get('/appointments',
     authMiddleware.authenticate,
-    accessControlMiddleware.accessControl,
+    blockchainMiddleware.getUsername,
     hlfcontroller.get.getAllAppointments);
 
 router.get('/diseases',
     authMiddleware.authenticate,
-    accessControlMiddleware.accessControl,
+    blockchainMiddleware.getUsername,
     hlfcontroller.get.getAllCronicalDiseases);
-
-router.get('/data',
-  authMiddleware.authenticate,
-  accessControlMiddleware.accessControl,
-  remoteAccessController.getAllPatientData
-);
 
 router.get('/show', authMiddleware.authenticate, fileController.showFile);
 

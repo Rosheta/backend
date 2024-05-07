@@ -26,8 +26,8 @@ const hlfController = {
     },
     getAllCronicalDiseases: async (req, res) => {
       try {
-        const PatientId = req.patientUsername;
-        const signer = req.patientUsername;
+        const PatientId = req.username;
+        const signer = req.username;
         const data = await hlf.getChronicDieases(PatientId, signer);
         res.send(data);
       } catch (error) {
@@ -36,8 +36,8 @@ const hlfController = {
     },
     getAllAppointments: async (req, res) => {
       try {
-        const PatientId = req.patientUsername;
-        const signer = req.patientUsername;
+        const PatientId = req.username;
+        const signer = req.username;
         const data = await hlf.getAllAppointments(PatientId, signer);
         res.send(data);
       } catch (error) {
