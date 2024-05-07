@@ -10,6 +10,8 @@ const searchController = {
         const { query, government, specialization, organization } = req.body;
         if(query === "") return res.status(200).json([]);
 
+        console.log(query);
+        let userId = req.user;
         let userType = req.type;
         // if the user is patient, don't search for patient
         if(userType === 'p'){
@@ -35,7 +37,9 @@ const searchController = {
                 if (specialization && specialization !== 'Any') {
                     filter.department = { $regex: specialization, $options: 'i' };
                 }
-                result = await Doctor.find(filter).limit(20);
+                let user = await Patient.findById(userId);
+                if(user.gender == 'f') result = await Doctor.find(filter).sort({ gender: 1 }).limit(20);
+                else result = await Doctor.find(filter).limit(20);
             } else if (organization === 'Any') {
                 const labFilter = {};
                 const doctorFilter = {};
@@ -46,7 +50,11 @@ const searchController = {
                 }
 
                 const labResults = await Lab.find(labFilter).limit(10);
-                const doctorResults = await Doctor.find(doctorFilter).limit(10);
+                let doctorResults = [];
+
+                let user = await Patient.findById(userId);
+                if(user.gender == 'f') doctorResults = await Doctor.find(doctorFilter).sort({ gender: 1 }).limit(10);
+                else doctorResults = await Doctor.find(doctorFilter).limit(10);
 
                 // Merge and deduplicate results from all collections
                 result = [...doctorResults, ...labResults];
