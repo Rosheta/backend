@@ -56,8 +56,8 @@ const pushNotificationsController = {
         try{
             let message = {
                 notification : {
-                    title: "You get access from user $address of user",
-                    body: "test"
+                    title: `You get access from user ${patientUsername}`,
+                    body: ""
                 },
                 data:{ // here where to send the patient data 
                     dataAccessToken : generateToken(patientUsername,username),
