@@ -149,6 +149,25 @@ const authController = {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
+  },
+
+  getUser: async (req, res) => {
+    try {
+      const username = req.query.username;
+
+      let user = await Doctor.findOne({ 'username': username });
+
+      if(!user)
+        return res.status(404).json({ message: 'User not found' });
+
+      return res.status(200).json({
+        name: user.name,
+        image: user.profile_picture,
+      });
+    }catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
   }
 };
 

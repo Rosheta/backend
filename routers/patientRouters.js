@@ -31,4 +31,6 @@ router.get('/show', authMiddleware.authenticate, fileController.showFile);
 
 router.delete('/deleteFile', authMiddleware.authenticate,fileController.deleteFile);
 
+router.get('/user' , authMiddleware.authenticate , authController.getUser);
+
 module.exports = router;
