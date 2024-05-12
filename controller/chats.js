@@ -178,6 +178,40 @@ const chatController = {
             throw new Error(`Failed to get receiver ID: ${error.message}`);
         }
  
+    },
+
+    
+    sendEmergency: async (senderId, receiverId) => {
+        try {
+            let chatData = await chat.findOne({
+                $or: [
+                    { userId_1: senderId, userId_2: receiverId },
+                    { userId_1: receiverId, userId_2: senderId }
+                ]
+            });
+
+            if (!chatData) {
+                chatData = await chat.create({
+                    userId_1: senderId,
+                    userId_2: receiverId
+                });
+            }
+
+            const chatId = chatData._id;
+
+            const emergencyMessage = ' لقد اضطرينا للنظر الي سجلاتك بسبب اصابتك الاخيرة للتصرف في حالتك بطريقة افضل و نتمني شفائك العاجل';
+
+            const saveMessageResult = await chatController.saveMessage(senderId, receiverId, chatId, emergencyMessage);
+
+            if (saveMessageResult.success) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Error sending emergency message:', error);
+            return false;
+        }
     }
 };
 module.exports = chatController;
