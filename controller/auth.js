@@ -5,8 +5,10 @@ const dotenv = require('dotenv');
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
 const Lab = require('../models/lab');
+const Firebase = require('../models/firebase');
 
 const handleErrors = require('../utils/errorHandler')
+const hlf = require('../HLF/contractServices');
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -23,7 +25,7 @@ const authController = {
         password: password, 
         name: name,
         phone_number: { value: phone }, 
-        ssn: { value: ssn },
+        ssn: ssn,
         birthdate: { value: birthdate },
         gender: gender
       });
@@ -48,7 +50,7 @@ const authController = {
         password: password, 
         name: name,
         phone_number: { value: phone }, 
-        ssn: { value: ssn },
+        ssn: ssn,
         birthdate: { value: birthdate },
         gender: gender,
         location : location,
@@ -92,7 +94,7 @@ const authController = {
   },
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { email, password, devicetoken } = req.body;
 
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
@@ -117,9 +119,52 @@ const authController = {
       }
 
       const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
+      
+      if(type == 'd'){
+        const data = await hlf.EnrollDoctor(user.username, user.blockchain_pass); 
+        console.log(data);
+      }
+      else if(type == 'p'){
+        const data = await hlf.EnrollPatient(user.username, user.blockchain_pass); 
+        console.log(data);
+      }
+      // Check if the username already exists in the database
+      const existingUser = await Firebase.findOne({ username: user.username });
+
+      if (existingUser) {
+          // Username already exists, update the token
+          existingUser.token = devicetoken;
+          await existingUser.save();
+      } else {
+          // Username doesn't exist, create a new entry
+          const newUserToken = new Firebase({
+              username: user.username,
+              token: devicetoken
+          });
+          await newUserToken.save();
+      }
 
       res.status(200).json({ token });
     } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
+
+  getUser: async (req, res) => {
+    try {
+      const username = req.query.username;
+
+      let user = await Doctor.findOne({ 'username': username });
+
+      if(!user)
+        return res.status(404).json({ message: 'User not found' });
+
+      return res.status(200).json({
+        name: user.name,
+        image: user.profile_picture,
+      });
+    }catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }

@@ -7,7 +7,7 @@
     "start": "nodemon index.js",
     "dev": "nodemon index.js",
     "test": "jest",
-    "seed": "node ./db/patients_seed.js; node ./db/chat_seed.js; node ./db/message_seed.js"
+    "seed": "export NODE_ENV=development && node ./seeders/patients_seed.js && node ./seeders/doctors_seed.js && node ./seeders/chat_seed.js && node ./seeders/message_seed.js && node ./seeders/lab_seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,12 +16,14 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
+    "firebase-admin": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.2",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
     "socket.io": "^4.7.5",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",

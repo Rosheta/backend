@@ -19,6 +19,7 @@ async function main() {
     for (let i = 0; i < num_records; i++) {
         const phone_number = faker.number.int({ min: 10000000000, max: 99999999999 }).toString();
         const ssn = faker.number.int({ min: 10000000000000, max: 99999999999999 }).toString();
+        console.log(ssn);
         const email = faker.internet.email();
         const password = faker.internet.password({length: 15, prefix: "Ul@1"});
         try {
@@ -28,10 +29,7 @@ async function main() {
                     value: phone_number,
                     visible: true
                 },
-                ssn: {
-                    value: ssn,
-                    visible: true
-                },
+                ssn: ssn,
                 email: {
                     value: email,
                     visible: true
@@ -45,13 +43,15 @@ async function main() {
                 profile_picture: faker.image.avatar(),
                 location: "sedi beshr",
                 government: faker.helpers.arrayElement(["Alexandria", "Cairo"]),
-                department: faker.helpers.arrayElement(["Neurology", "Otology"])
+                department: faker.helpers.arrayElement(["Neurology", "Otology"]),
+                license: "doctors_licenses/toto_lolo-1714974116139.pdf",
             });
-            writeFile('./seeders/doctors.txt', `${doctor._id} ---> ${email} ---> ${password}\n`, {flag: 'a'}, (err) => {
+            await doctor.save();
+            const line = `${doctor._id} ---> ${email} ---> ${password}`;
+            writeFile('./seeders/doctors.txt', i<num_records-1 ? `${line}\n` : line, { flag: 'a' }, (err) => {
                 if (err)
                     console.log(err);
             });
-            await doctor.save();
         }
         catch (error) {
             console.log(error)

@@ -1,3 +1,5 @@
 /node_modules
-.env
-/db/patients.txt
+
+/labs_licenses
+
+/doctors_licenses
