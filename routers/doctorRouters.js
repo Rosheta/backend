@@ -38,6 +38,6 @@ router.post('/appointment',
 );
 router.post('/register', upload.single('file'), authController.register_doctor);
 
-router.get('/emergency', authMiddleware.authenticate, emergencyController.generateToken);
+router.get('/emergency', authMiddleware.authenticate, emergencyController.getEmergencyToken);
 
 module.exports = router;
