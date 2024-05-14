@@ -1,6 +1,7 @@
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
 const Lab = require('../models/lab');
+const Government = require('../models/government');
 const { currentIP } = require('../utils/network');
 
 const dotenv = require('dotenv');
@@ -20,6 +21,8 @@ const profileController = {
                 user = await Doctor.findById(userId);    
             }else if (userType === 'l') {
                 user = await Lab.findById(userId);
+            }else if (userType === 'g') {
+                user = await Government.findById(userId);
             }
 
             if (!user) {
@@ -32,9 +35,9 @@ const profileController = {
                 "email": user.email,
                 "phone": user.phone_number,
                 "profile_image": pp,
-                "user_name": user.username,
+                "user_name": (userType !== 'g')? user.username: undefined,
                 "gender": (userType === 'p' || userType === 'd') ? user.gender : undefined,
-                "location": (userType === 'd' || userType === 'l') ? user.location : undefined,
+                "location": (userType === 'd' || userType === 'l' || userType === 'g') ? user.location : undefined,
                 "government": (userType === 'd' || userType === 'l') ? user.government : undefined,
                 "department": userType === 'd'? user.department: undefined,
                 "birthdate": (userType === 'p' || userType === 'd') ? user.birthdate : undefined,
@@ -42,7 +45,6 @@ const profileController = {
             }
             return res.status(200).json(responseData);
         } catch (error) {
-            console.error("Error updating profile picture:", error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
@@ -61,6 +63,10 @@ const profileController = {
                 userType = "l"
             }
             if (!user) {
+                user = await Government.findById(userId);    
+                userType = "l"
+            }
+            if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
 
@@ -71,9 +77,9 @@ const profileController = {
                 "email": user.email.visible? user.email.value: undefined,
                 "phone": user.phone_number.visible? user.name.value: undefined,
                 "profile_image": pp,
-                "user_name": user.username,
+                "user_name": (userType !== 'g')? user.username: undefined,
                 "gender": (userType === 'p' || userType === 'd') ? user.gender : undefined,
-                "location": (userType === 'd' || userType === 'l') ? user.location : undefined,
+                "location": (userType === 'd' || userType === 'l' || userType === 'g') ? user.location : undefined,
                 "government": (userType === 'd' || userType === 'l') ? user.government : undefined,
                 "department": userType === 'd' ? user.department : undefined,
                 "birthdate": (userType === 'p' || userType === 'd') && user.birthdate.visible ? user.birthdate.value : undefined,
@@ -149,6 +155,8 @@ const profileController = {
                 user = await Doctor.findById(userId);    
             } else if (userType === 'l') {
                 user = await Lab.findById(userId);
+            } else if (userType === 'g') {
+                user = await Government.findById(userId);
             }
 
             if (!user) {
