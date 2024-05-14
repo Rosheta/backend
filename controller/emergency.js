@@ -1,6 +1,5 @@
-const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
-const Lab = require('../models/lab');
+const Government = require('../models/government');
 const dotenv = require('dotenv');
 const chatsController = require('../controller/chats');
 const pushNotificationsController = require('./push_notifications');
@@ -20,8 +19,10 @@ const emergencyController = {
         // verify that the user calling this function is special user for emergency cases
         let userId = req.user;
         let userType = req.type;
-        // continue
-
+        const government = await Government.findById(userId);
+        if(!government || userType != 'g'){
+            return res.status(404).json({ error: 'You do not have access to this data' });
+        }
 
         // if all is good, send message to the patient that this user saw his data
         const emergencyMessage = chatsController.sendEmergency(userId,patient._id);
