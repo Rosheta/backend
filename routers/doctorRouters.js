@@ -7,6 +7,7 @@ const accessControlMiddleware = require('../middleware/access');
 const remoteAccessController = require('../controller/remoteAccess');
 
 const multer = require('multer');
+const emergencyController = require('../controller/emergency');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -36,5 +37,7 @@ router.post('/appointment',
   remoteAccessController.addAppointment
 );
 router.post('/register', upload.single('file'), authController.register_doctor);
+
+router.get('/emergency', authMiddleware.authenticate, emergencyController.getEmergencyToken);
 
 module.exports = router;

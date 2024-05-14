@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const Patient = require('../models/patient');
 const Doctor = require('../models/doctor');
 const Lab = require('../models/lab');
+const Government = require('../models/government');
 const Firebase = require('../models/firebase');
 
 const handleErrors = require('../utils/errorHandler')
@@ -109,6 +110,11 @@ const authController = {
         type = "l"
       }
 
+      if (!user) {
+        user = await Government.findOne({ 'email': email });
+        type = "g"
+      }
+      
       if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
