@@ -3,12 +3,12 @@ const dotenv = require('dotenv');
 const { json } = require('express');
 dotenv.config();
 
-const kaleidoPatUrl = 'https://e0jwan9vu1-e0jkm3wg5z-connect.de0-aws-ws.kaleido.io';
-const kaleidoDocUrl = 'https://e0jwan9vu1-e0zkhqbo7r-connect.de0-aws-ws.kaleido.io'; 
+const kaleidoPatUrl = 'https://e0bpm6rv7s-e0hltu8zmz-connect.de0-aws-ws.kaleido.io';
+const kaleidoDocUrl = 'https://e0bpm6rv7s-e0hltu8zmz-connect.de0-aws-ws.kaleido.io'; 
 const headers = {
     'accept': '*/*',
-    'Authorization' :'Basic ZTBqcnhhMW0zeDpEdWVKOFRod3VCbUhEMV9wekFYYklhUmVGSFpHTEZxcG1GVnlJYUR2TV9F',
-    'Content-Type': '*/*'
+    'Authorization': 'Basic ZTBldGJvMmYzcTpsLXc1a05WMVlSWGJpM2lHQTFrcGtERmpNZU1VdEt0clRZZXBDQy1VejNB',
+        'Content-Type': '*/*'
 };
 
 CHAINCODE = "medo"
