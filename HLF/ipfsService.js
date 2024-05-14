@@ -11,8 +11,9 @@ dotenv.config();
 
 
 
-const ipfsUrl = 'https://e0jwan9vu1-e0iakf5bqj-ipfs.de0-aws.kaleido.io/api/v0';
-const ipfsKey = 'Basic ZTB6dzAwMjJyNTp2RnRET19kMjFWTXd2SmRSXzh0aGh4UTQ4VDhYREJxS3prMW9BRmU3ZDQ0';
+const ipfsUrl = 'https://e0bpm6rv7s-e0kyy3sb9m-ipfs.de0-aws.kaleido.io/api/v0';
+const ipfsKey =  'Basic ZTBldGJvMmYzcTpsLXc1a05WMVlSWGJpM2lHQTFrcGtERmpNZU1VdEt0clRZZXBDQy1VejNB';
+;
 const headers = {
     'accept': '*/*',
     'Authorization': ipfsKey,
