@@ -60,7 +60,7 @@ const remoteAccessController = {
             const blockchain_transaction_data = {
                 "ChronicDiseases": chronics,
                 "Date": new Date(),
-                "DoctorId": req.doctorUsername,
+                "DoctorId": doctor.name,
                 "Name": `${doctor.username}_${req.patientUsername}_${Date.now()}`,
                 "Notes": notes,
                 "PatientId": req.patientUsername,
