@@ -111,7 +111,7 @@ const authController = {
       }
 
       if (!user) {
-        user = await Government.findOne({ 'email': email });
+        user = await Government.findOne({ 'email.value': email });
         type = "g"
       }
       
