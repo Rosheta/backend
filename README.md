@@ -1,4 +1,4 @@
-# EHR Data Manager Blockchain-Based Project (Roshata)
+# EHR Data Manager Blockchain-Based Project (Rosheta)
 
 ## Overview
 The EHR Data Manager Blockchain-Based project is a cutting-edge solution designed to revolutionize electronic health record (EHR) management. Leveraging blockchain technology, this platform offers a secure, transparent, and efficient way to store, share, and verify EHRs. From signing up and logging in to accessing medical records and handling emergencies, this system streamlines healthcare data management, ensuring data integrity and privacy.
