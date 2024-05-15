@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const Doctor = require('../models/doctor');
+const Government= require('../models/government');
+
 
 dotenv.config();
 const JWT_REMOTE_ACCESS_SECRET = process.env.JWT_REMOTE_ACCESS_SECRET;
@@ -22,6 +24,7 @@ const accessControlMiddleware = {
 
         let userId = req.user;
         let user = await Doctor.findById(userId);
+        if (!user) {user = await Government.findById(userId);}
 
         // verify the username in the token is the same as the requested one
         if (user.username !== doctorUsername) {
