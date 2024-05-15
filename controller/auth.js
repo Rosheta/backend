@@ -97,6 +97,7 @@ const authController = {
     try {
       const { email, password, devicetoken } = req.body;
 
+
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
 
@@ -114,7 +115,7 @@ const authController = {
         user = await Government.findOne({ 'email.value': email });
         type = "g"
       }
-      
+
       if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }

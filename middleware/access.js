@@ -10,7 +10,7 @@ const JWT_REMOTE_ACCESS_SECRET = process.env.JWT_REMOTE_ACCESS_SECRET;
 const accessControlMiddleware = {
   accessControl: async (req, res, next) => {
     // Get the token from the request header
-    const token = req.headers.accesscontrol && req.headers.accesscontrol;
+    const token = req.headers.accesscontrol && req.headers.accesscontrol.split(' ')[1];
 
     // Check if token is present
     if (!token) {
