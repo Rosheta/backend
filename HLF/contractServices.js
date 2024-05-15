@@ -11,8 +11,8 @@ const headers = {
         'Content-Type': '*/*'
 };
 
-CHAINCODE = "medo"
-CHANNEL = "family"
+CHAINCODE = process.env.CHAINCODE; 
+CHANNEL = process.env.CHANNEL;
 // register a new patient in the blockchain service
 async function RegisterUser(user) {
     try {
