@@ -11,8 +11,8 @@ dotenv.config();
 
 
 
-const ipfsUrl = 'https://e0bpm6rv7s-e0kyy3sb9m-ipfs.de0-aws.kaleido.io/api/v0';
-const ipfsKey =  'Basic ZTBldGJvMmYzcTpsLXc1a05WMVlSWGJpM2lHQTFrcGtERmpNZU1VdEt0clRZZXBDQy1VejNB';
+const ipfsUrl = process.env.kaleidoIPFSUrl;
+const ipfsKey =  process.env.kaleidoKEY;
 ;
 const headers = {
     'accept': '*/*',
