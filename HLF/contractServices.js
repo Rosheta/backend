@@ -3,16 +3,16 @@ const dotenv = require('dotenv');
 const { json } = require('express');
 dotenv.config();
 
-const kaleidoPatUrl = 'https://e0bpm6rv7s-e0hltu8zmz-connect.de0-aws-ws.kaleido.io';
-const kaleidoDocUrl = 'https://e0bpm6rv7s-e0hltu8zmz-connect.de0-aws-ws.kaleido.io'; 
+const kaleidoPatUrl = process.env.kaleidoPatUrl;
+const kaleidoDocUrl = process.env.kaleidoDocUrl; 
 const headers = {
     'accept': '*/*',
-    'Authorization': 'Basic ZTBldGJvMmYzcTpsLXc1a05WMVlSWGJpM2lHQTFrcGtERmpNZU1VdEt0clRZZXBDQy1VejNB',
+    'Authorization': process.env.kaleidoKEY,
         'Content-Type': '*/*'
 };
 
-CHAINCODE = "medo"
-CHANNEL = "family"
+CHAINCODE = process.env.CHAINCODE; 
+CHANNEL = process.env.CHANNEL;
 // register a new patient in the blockchain service
 async function RegisterUser(user) {
     try {
