@@ -9,16 +9,28 @@ const governmentSchema = new mongoose.Schema({
     required: [true, "you must enter a lab name"]
   },
   phone_number: {
+    value: {
       type: String,
       unique: [true, "phone number is already used"],
       validate: [v => isLength(v, { min: 11, max: 11 }) && isNumeric(v), `not a valid phone number. Must be exactly 11 digits.`],
       required: [true, "you must enter a phone number"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   email: {
+    value: {
       type: String,
       unique: [true, "email is already used"],
       validate: [isEmail, 'not a valid email'],
       required: [true, "you must enter your email"]
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    }
   },
   password: {
     type: String,

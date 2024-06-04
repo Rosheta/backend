@@ -95,7 +95,7 @@ const profileController = {
         const { email, name, phone, ID, date, userName, department, gender, government, location} = req.body;
         const userId = req.user;
         const userType = req.type;
-
+        console.log(userType)
         try {
             let user = null
             if (userType === 'p') {
@@ -122,7 +122,7 @@ const profileController = {
                     location: location
                 });
             } else if (userType === 'l') {
-                user = await Doctor.findByIdAndUpdate(userId, {
+                user = await Lab.findByIdAndUpdate(userId, {
                     email: email,
                     name: name,
                     phone_number: phone,
@@ -158,7 +158,7 @@ const profileController = {
             } else if (userType === 'g') {
                 user = await Government.findById(userId);
             }
-
+             console.log(user)
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
