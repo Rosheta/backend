@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { isEmail, isLength, isNumeric, isStrongPassword } = require('validator');
-const { type } = require('os');
 const HLF = require('../HLF/contractServices');
 
+const validateSSN = require('../utils/ssn_validator');
+console.log(validateSSN)
 const patientSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,8 +26,12 @@ const patientSchema = new mongoose.Schema({
   ssn: {
       type: String,
       unique: [true, "SSN is already used"],
-      validate: [v => isLength(v, { min: 14, max: 14 }) && isNumeric(v), `not a valid SSN. Must be exactly 14 digits.`]
-  },
+      validate: {
+        validator: validateSSN,
+        message: props => `${props.value} is not a valid SSN Structure.`
+      },
+      required: [true, "you must enter your ssn"]
+    },
   email: {
     value: {
       type: String,
