@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send(' Rosheta!');
+  res.send(' Welcome to Rosheta!');
 });
 
 app.use('/images',express.static(__dirname + '/images'));
