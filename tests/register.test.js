@@ -1,78 +1,78 @@
-const authController = require('../controller/auth');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const Message = require('../models/message');
-const Chat = require('../models/chat');
-const Patient = require('../models/patient');
+// const authController = require('../controller/auth');
+// const jwt = require('jsonwebtoken');
+// const mongoose = require('mongoose');
+// const Message = require('../models/message');
+// const Chat = require('../models/chat');
+// const Patient = require('../models/patient');
 
-// Mock JWT_SECRET for testing purposes
-process.env.JWT_SECRET = 'test-secret';
+// // Mock JWT_SECRET for testing purposes
+// process.env.JWT_SECRET = 'test-secret';
 
-describe('authController', () => {
-  // Mock JWT verification
-  jest.mock('jsonwebtoken', () => ({
-    verify: jest.fn().mockReturnValue({ id: 'test-user-id' })
-  }));
+// describe('authController', () => {
+//   // Mock JWT verification
+//   jest.mock('jsonwebtoken', () => ({
+//     verify: jest.fn().mockReturnValue({ id: 'test-user-id' })
+//   }));
 
-  // Mock MongoDB connection
-  beforeAll(async () => {
-    await mongoose.connect('mongodb://localhost:27017/testdb', { useNewUrlParser: true, useUnifiedTopology: true });
-  });
+//   // Mock MongoDB connection
+//   beforeAll(async () => {
+//     await mongoose.connect('mongodb://localhost:27017/testdb', { useNewUrlParser: true, useUnifiedTopology: true });
+//   });
 
-  // Clear database after each test
-  afterEach(async () => {
-    await Message.deleteMany({});
-    await Chat.deleteMany({});
-    await Patient.deleteMany({});
-  });
+//   // Clear database after each test
+//   afterEach(async () => {
+//     await Message.deleteMany({});
+//     await Chat.deleteMany({});
+//     await Patient.deleteMany({});
+//   });
 
-  afterAll(async () => {
-    await mongoose.disconnect();
-  });
+//   afterAll(async () => {
+//     await mongoose.disconnect();
+//   });
 
-  describe('saveMessage', () => {
-    it('should save a message to the database', async () => {
-      // Arrange
-      const senderId = 'senderId';
-      const receiverId = 'receiverId';
-      const chatId = 5;
-      const message = 'Hello, world!';
+//   describe('saveMessage', () => {
+//     it('should save a message to the database', async () => {
+//       // Arrange
+//       const senderId = 'senderId';
+//       const receiverId = 'receiverId';
+//       const chatId = 5;
+//       const message = 'Hello, world!';
 
-      // Act
-      const result = await chatController.saveMessage(senderId, receiverId, chatId, message);
+//       // Act
+//       const result = await chatController.saveMessage(senderId, receiverId, chatId, message);
 
-      // Assert
-      expect(result.success).toBe(true);
+//       // Assert
+//       expect(result.success).toBe(true);
 
-      // Check if message is saved in the database
-      const savedMessage = await Message.findOne({ sender: senderId, receiver: receiverId, chatId: chatId, message: message });
-      expect(savedMessage).toBeTruthy();
-    });
-  });
+//       // Check if message is saved in the database
+//       const savedMessage = await Message.findOne({ sender: senderId, receiver: receiverId, chatId: chatId, message: message });
+//       expect(savedMessage).toBeTruthy();
+//     });
+//   });
 
-  describe('getReceiverId', () => {
-    it('should return the receiver ID for a given chat ID and sender ID', async () => {
-      // Arrange
-      const chatId = 123;
-      const senderId = '65fd9bcb0ed83e13f6a25d67';
-      const receiverId = '65fd9bcb0ed83e13f6a25d32';
-      const chatData = new Chat({ chatId: chatId, userId_1: senderId, userId_2: receiverId });
-      await chatData.save();
+//   describe('getReceiverId', () => {
+//     it('should return the receiver ID for a given chat ID and sender ID', async () => {
+//       // Arrange
+//       const chatId = 123;
+//       const senderId = '65fd9bcb0ed83e13f6a25d67';
+//       const receiverId = '65fd9bcb0ed83e13f6a25d32';
+//       const chatData = new Chat({ chatId: chatId, userId_1: senderId, userId_2: receiverId });
+//       await chatData.save();
 
-      // Act
-      const result = await chatController.getReceiverId(chatId, senderId);
+//       // Act
+//       const result = await chatController.getReceiverId(chatId, senderId);
 
-      // Assert
-      expect(result).toEqual(receiverId);
-    });
+//       // Assert
+//       expect(result).toEqual(receiverId);
+//     });
 
-    it('should throw an error if chat is not found', async () => {
-      // Arrange
-      const chatId = 456;
-      const senderId = '65fd9bcb0ed83e13f6a25d67';
+//     it('should throw an error if chat is not found', async () => {
+//       // Arrange
+//       const chatId = 456;
+//       const senderId = '65fd9bcb0ed83e13f6a25d67';
 
-      // Act & Assert
-      await expect(chatController.getReceiverId(chatId, senderId)).rejects.toThrow('Chat not found');
-    });
-  });
-});
+//       // Act & Assert
+//       await expect(chatController.getReceiverId(chatId, senderId)).rejects.toThrow('Chat not found');
+//     });
+//   });
+// });

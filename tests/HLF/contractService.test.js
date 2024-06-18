@@ -1,6 +1,17 @@
 // test contractService.js
 const axios = require('axios');
-const { RegisterUser, EnrollPatient, EnrollDoctor, getAllUsers } = require('../../HLF/contractServices');
+const { getAllMedicalRecords,
+  ReadMedicalRecord,
+  DeleteMedicalRecord,
+  CreateMedicalRecord,
+  UpdateMedicalRecord,
+  getChronicDieases,
+  RegisterUser,
+  EnrollPatient,
+  EnrollDoctor,
+  getAllUsers,
+  getAllAppointments,
+  DeleteAllMedicalRecords} = require('../../HLF/contractServices.js');
 
 // Mock the environment variables
 kaleidoPatUrl = process.env.kaleidoPatUrl;
@@ -97,7 +108,6 @@ describe('register users', () => {
 describe('EnrollUser', () => {
     it('should enroll a doctor with valid credentials', async () => {
         const axios = require('axios');
-        const contractServices = require('../backend/HLF/contractServices.js');
 
         // Mock the axios post method
         axios.post = jest.fn().mockResolvedValue({ data: 'Enrollment successful' });
@@ -116,7 +126,7 @@ describe('EnrollUser', () => {
         // Enroll a doctor with empty username
         it('should not enroll a doctor with empty username', async () => {
             const axios = require('axios');
-            const contractServices = require('../backend/HLF/contractServices.js');
+            const contractServices = require('../../backend/HLF/contractServices.js');
     
             // Call the EnrollDoctor function with an empty username
             const result = await contractServices.EnrollDoctor('', 'password123');
@@ -130,7 +140,7 @@ describe('EnrollUser', () => {
             // Enroll a doctor with invalid kaleidoDocUrl
     it('should return an error when enrolling a doctor with invalid kaleidoDocUrl', async () => {
         const axios = require('axios');
-        const contractServices = require('../backend/HLF/contractServices.js');
+        const contractServices = require('../../backend/HLF/contractServices.js');
 
         // Mock the axios post method
         axios.post = jest.fn().mockRejectedValue('Invalid kaleidoDocUrl');
