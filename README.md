@@ -3,6 +3,7 @@
 ## Overview
 The EHR Data Manager Blockchain-Based project is a cutting-edge solution designed to revolutionize electronic health record (EHR) management. Leveraging blockchain technology, this platform offers a secure, transparent, and efficient way to store, share, and verify EHRs. From signing up and logging in to accessing medical records and handling emergencies, this system streamlines healthcare data management, ensuring data integrity and privacy.
 
+
 ## Features
 - **User Registration**: Securely register new users on the blockchain and database.
 - **Authentication**: Log in using blockchain enrollment, hashed passwords, and JWT token authorization.
@@ -27,7 +28,9 @@ Ensure you have Node.js and npm installed on your system.
 3. Install dependencies: `npm install`
 4. Configure environment variables as per the `.env` file.
 5. Run the project: `npm start`
+## CICD
 
+![cicd](https://github.com/Rosheta/backend/assets/94381197/e010efe6-d31b-4f80-a9a6-124f29cb333a)
 ## Usage
 - **Sign Up**: Users can sign up by visiting the registration page and filling out the required information.
 - **Login & Enroll**: Upon successful login, users are enrolled in the blockchain, their password is hashed, and a JWT token is generated for authorization.
