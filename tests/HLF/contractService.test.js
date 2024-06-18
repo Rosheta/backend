@@ -348,6 +348,20 @@ describe('CreateMedicalRecord', () => {
         process.env.kaleidoPatUrl = 'mocked-url';
 
         // Call the function
+        /**
+         * Represents the result of creating a medical record.
+         * @typedef {Object} CreateMedicalRecordResult
+         * @property {string} appointment - The appointment value used for creating the medical record.
+         * @property {string} extraField - The extra field value used for creating the medical record.
+         * @property {string} signer - The signer value used for creating the medical record.
+         */
+        /**
+         * Represents the result of creating a medical record.
+         * @typedef {Object} CreateMedicalRecordResult
+         * @property {string} appointment - The appointment value used for creating the medical record.
+         * @property {string} extraField - The extra field value used for creating the medical record.
+         * @property {string} mockedSigner - The mocked signer value used for creating the medical record.
+         */
         const result = await CreateMedicalRecord({ appointment: 'mocked-appointment', extraField: 'extra-value' }, 'mocked-signer');
 
         // Check if axios.post is called with the correct arguments
