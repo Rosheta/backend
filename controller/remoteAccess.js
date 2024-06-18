@@ -64,7 +64,7 @@ const remoteAccessController = {
                 "Name": `${doctor.username}_${req.patientUsername}_${Date.now()}`,
                 "Notes": notes,
                 "PatientId": req.patientUsername,
-                "Prescription": prescription,
+                "Prescription":JSON.stringify( prescription),
             };
             const data = await hlf.CreateMedicalRecord(blockchain_transaction_data, req.patientUsername);
             res.send(data);
