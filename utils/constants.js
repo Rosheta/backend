@@ -45,5 +45,9 @@ const departments = [
     'Orthopedics',
     'Gynecology'
 ];
-
-module.exports = {governments, departments}
+const governmentsCodes = new Set([
+    '01', '02', '03', '04', '11', '12', '13', '14', '15', '16', '17', '18', '19', 
+    '21', '22', '23', '24', '25', '26', '27', '28', '29', '31', '32', '33', '34', 
+    '35', '88'
+  ]);
+module.exports = {governments, departments, governmentsCodes}

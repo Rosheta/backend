@@ -1,13 +1,13 @@
 const File = require('../models/file');
 const hlf = require('../HLF/contractServices');
 const Doctor = require('../models/doctor');
+const ipfsService = require('../HLF/ipfsService');
 
 const remoteAccessController = {
     getAllPatientData : async (req,res) => {
         const patientUsername = req.patientUsername
 
-        // get the files of the patient to send it to the doctor
-        const userFiles = await File.find({ patientUsername });
+        const userFiles = await File.find({ username: patientUsername });
 
         const filesList = userFiles.map(file => ({
             Filename: file.fileName,
@@ -30,11 +30,10 @@ const remoteAccessController = {
     },
     getFile: async (req, res) => {
         const patientUsername = req.patientUsername
+        const hash = req.query.fileHash;
 
-        const fileHash = req.query.fileHash;
+        const file = await File.findOne({ hash });
 
-        // get the file by its hash
-        const file = await File.findOne({ fileHash });
         if (!file) {
             return res.status(404).json({ error: 'File not found' });
         }
@@ -43,7 +42,8 @@ const remoteAccessController = {
             return res.status(403).json({ error: 'Unauthorized' });
         }
         try{
-            const bytes = await ipfsService.getFileFromIPFS(fileHash);
+            const bytes = await ipfsService.getFileFromIPFS(hash);
+
             const buffer = Buffer.from(bytes);
             res.status(200).send(buffer);
         }
@@ -60,7 +60,7 @@ const remoteAccessController = {
             const blockchain_transaction_data = {
                 "ChronicDiseases": chronics,
                 "Date": new Date(),
-                "DoctorId": req.doctorUsername,
+                "DoctorId": doctor.name,
                 "Name": `${doctor.username}_${req.patientUsername}_${Date.now()}`,
                 "Notes": notes,
                 "PatientId": req.patientUsername,

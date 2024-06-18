@@ -6,6 +6,9 @@ const chat = require('../models/chat');
 const patient = require('../models/patient');
 const message = require('../models/message');
 const doctor = require('../models/doctor');
+const lab = require('../models/lab');
+const government = require('../models/government');
+
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -42,20 +45,43 @@ const chatController = {
                     }
                     else{
                         const friend = await doctor.findById(friendId);
-                        friendName = friend.name;
+                        if (friend) {
+                            friendName = friend.name;
+                        }
+                        else{
+                            const friend = await lab.findById(friendId);
+                            if (friend) {
+                                friendName = friend.name;
+                            } 
+                            else{
+                                const friend = await government.findById(friendId);
+                                if (friend) {
+                                    friendName = friend.name;
+                                } 
+                                else{
+                                    return res.status(402).json({ error: 'Not user Type' });
 
+                                }
+                            }
+                        }
                     }
-            
+
+                    let pic = friend && friend.profile_picture ? friend.profile_picture : "";
+
                     const formattedMessage = {
                         chatId: lastMessage.chatId.toString(),
                         name: friendName,
                         sender: lastMessage.sender,
                         lastmsg: lastMessage.message,
                         time: lastMessage.timestamp,
+                        ImageUrl: pic,
                     };
+
                     friends.push(formattedMessage);
                 }
             }
+            friends.sort((a, b) => a.time - b.time);
+
             return res.status(200).json({ friends });        
         } catch (error) {
             console.log(error)
@@ -198,8 +224,9 @@ const chatController = {
             }
 
             const chatId = chatData._id;
+            console.log(chatData)
 
-            const emergencyMessage = ' لقد اضطرينا للنظر الي سجلاتك بسبب اصابتك الاخيرة للتصرف في حالتك بطريقة افضل و نتمني شفائك العاجل';
+            const emergencyMessage = ' لقد اضطررنا للنظر الي سجلاتك بسبب اصابتك الاخيرة للتصرف في حالتك بطريقة افضل و نتمني شفائك العاجل';
 
             const saveMessageResult = await chatController.saveMessage(senderId, receiverId, chatId, emergencyMessage);
 
