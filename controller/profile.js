@@ -29,7 +29,10 @@ const profileController = {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            const pp = user.profile_picture.startsWith("https://")? user.profile_picture : `http://${currentIP}:5000/images/${user.profile_picture}`
+            let pp = "";
+            if (user.profile_picture) {
+                pp = user.profile_picture.startsWith("https://") ? user.profile_picture : `http://${currentIP}:5000/images/${user.profile_picture}`;
+            } 
             const responseData = {
                 "name": user.name,
                 "email": user.email,

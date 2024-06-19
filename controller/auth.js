@@ -97,6 +97,7 @@ const authController = {
     try {
       const { email, password, devicetoken } = req.body;
 
+      console.log(email, password, devicetoken)
 
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
@@ -124,6 +125,8 @@ const authController = {
       if (!isPasswordValid) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
+
+      console.log(user)
 
       const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
       
