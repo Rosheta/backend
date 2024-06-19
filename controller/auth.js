@@ -97,8 +97,6 @@ const authController = {
     try {
       const { email, password, devicetoken } = req.body;
 
-      console.log(email, password, devicetoken)
-
       let user = await Patient.findOne({ 'email.value': email });
       let type = "p"
 
@@ -126,17 +124,13 @@ const authController = {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
 
-      console.log(user)
-
       const token = jwt.sign({ id: user._id, type: type }, JWT_SECRET, { expiresIn:  JWT_EXPIRE});
-      
+
       if(type == 'd'){
         const data = await hlf.EnrollDoctor(user.username, user.blockchain_pass); 
-        console.log(data);
       }
       else if(type == 'p'){
         const data = await hlf.EnrollPatient(user.username, user.blockchain_pass); 
-        console.log(data);
       }
       // Check if the username already exists in the database
       const existingUser = await Firebase.findOne({ username: user.username });
