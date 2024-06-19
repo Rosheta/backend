@@ -29,32 +29,32 @@ const chatController = {
 
             for (const chatId of chatIds) {
                 const lastMessage = await message.findOne({ chatId }).sort({ timestamp: -1 });
-
                 if (lastMessage) {
                     let friendId = '';
                     let friendName = '';
+                    let friend = '';
             
                     if (lastMessage.sender === userId) {
                         friendId = lastMessage.receiver;
                     } else {
                         friendId = lastMessage.sender;
                     }
-                    const friend = await patient.findById(friendId);
+                    friend = await patient.findById(friendId);
                     if (friend) {
                         friendName = friend.name;
                     }
                     else{
-                        const friend = await doctor.findById(friendId);
+                        friend = await doctor.findById(friendId);
                         if (friend) {
                             friendName = friend.name;
                         }
                         else{
-                            const friend = await lab.findById(friendId);
+                            friend = await lab.findById(friendId);
                             if (friend) {
                                 friendName = friend.name;
                             } 
                             else{
-                                const friend = await government.findById(friendId);
+                                friend = await government.findById(friendId);
                                 if (friend) {
                                     friendName = friend.name;
                                 } 
