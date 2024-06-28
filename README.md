@@ -46,4 +46,4 @@ Ensure you have Node.js and npm installed on your system.
 We welcome contributions to the EHR Data Manager project. Please review the Contributing Guidelines for details on how to submit changes.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the GNU General Public License, See the [LICENSE file](https://github.com/Rosheta/.github/blob/main/profile/COPYING.md) for details.
